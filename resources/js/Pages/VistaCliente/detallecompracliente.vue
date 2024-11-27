@@ -174,7 +174,8 @@ export default {
     if (response.data.redirect) {
       window.location.href = response.data.redirect;
     } else {
-      alert(response.data.success || "Compra realizada con éxito.");
+      alert(response.data.success || "Compra realizada con éxitos.");
+
     }
   })
   .catch((error) => {
