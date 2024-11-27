@@ -17,14 +17,13 @@ class MenuController extends Controller
 
         $menuOptions = [];
 
-    
         foreach ($permisos as $permiso) {
-            $opcion = Opcion::find($permiso->codOpcionF); 
+            $opcion = Opcion::find($permiso->codOpcionF);
             if ($opcion) {
                 $menu = Menu::find($opcion->codMenuF);
 
                 if ($menu) {
-                    $menuName = $menu->nombre; 
+                    $menuName = $menu->nombre;
                     if (!isset($menuOptions[$menuName])) {
                         $menuOptions[$menuName] = [
                             'icono' => $menu->icono,
@@ -32,7 +31,6 @@ class MenuController extends Controller
                         ];
                     }
 
-            
                     $opcionExistente = false;
                     foreach ($menuOptions[$menuName]['opciones'] as $existingOption) {
                         if ($existingOption['nombre'] === $opcion->nombre) {
@@ -42,10 +40,13 @@ class MenuController extends Controller
                     }
 
                     if (!$opcionExistente) {
+                        $ruta = $opcion->ruta;
+                        $ruta = ltrim($ruta, '/');
+
                         $menuOptions[$menuName]['opciones'][] = [
                             'nombre' => $opcion->nombre,
                             'icono' => $opcion->icono,
-                            'ruta' => $opcion->ruta,
+                            'ruta' => $ruta,  
                         ];
                     }
                 }
