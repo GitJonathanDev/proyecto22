@@ -95,18 +95,22 @@ class VentaController extends Controller
         // Registrar detalles de la venta
         $productosSeleccionados = json_decode($request->productosSeleccionados);
     
-        // Verificar que los productos seleccionados son un array de objetos con las propiedades correctas
-        foreach ($productosSeleccionados as $producto) {
-            // Convertir el id a cadena
-            $productoId = (string) $producto->id;
+        // Asegurarse de que cada id de producto sea tratado como una cadena
+        $productosSeleccionados = array_map(function ($producto) {
+            return (string) $producto->id; // Convierte el id a cadena
+        }, $productosSeleccionados);
+    
+        foreach ($productosSeleccionados as $productoId) {
+            // Asegurarse de que $productoId es una cadena antes de hacer la consulta
+            $productoId = (string) $productoId;
     
             // Buscar el producto por su código (como cadena)
-            $productoEncontrado = Producto::where('codProducto', '=', $productoId)->first(); // Aseguramos el uso de 'string'
+            $producto = Producto::where('codProducto', $productoId)->first();
     
-            if ($productoEncontrado) {
+            if ($producto) {
                 $detalleVenta = new DetalleVenta();
                 $detalleVenta->codVenta = $venta->codVenta;
-                $detalleVenta->codProducto = $productoEncontrado->codProducto;
+                $detalleVenta->codProducto = $producto->codProducto;
                 $detalleVenta->cantidad = $producto->cantidad; // Asumir que el objeto $producto tiene la propiedad 'cantidad'
                 $detalleVenta->precioV = $producto->precio; // Asumir que el objeto $producto tiene la propiedad 'precio'
                 $detalleVenta->save();
