@@ -58,11 +58,11 @@
             @mouseenter="keepMenuOpen(menuName)"
             @mouseleave="hideMenu"
           >
-            <li v-for="opcion in menu.opciones" :key="opcion.nombre">
-              <a :href="opcion.ruta">
-                <i :class="opcion.icono"></i> {{ opcion.nombre }}
-              </a>
-            </li>
+          <li v-for="opcion in menu.opciones" :key="opcion.nombre">
+  <a :href="opcion.ruta">
+    <i :class="opcion.icono"></i> {{ opcion.nombre }}
+  </a>
+</li>
           </ul>
         </li>
       </ul>
@@ -204,9 +204,9 @@ export default {
     },
     fetchMenuOptions() {
   axios
-    .get(route('menus')) // Aquí "menus" es el nombre de la ruta registrada
+    .get(route('menus'))
     .then((response) => {
-      this.menuOptions = response.data; // Cargar directamente las rutas generadas
+      this.menuOptions = response.data;
     })
     .catch((error) => {
       console.error("Error al obtener las opciones del menú:", error);
@@ -307,11 +307,6 @@ async performSearch() {
   left: 0;
   z-index: 10;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-a.disabled {
-  pointer-events: none;
-  color: gray;
-  cursor: not-allowed;
 }
 
 .search-input {
