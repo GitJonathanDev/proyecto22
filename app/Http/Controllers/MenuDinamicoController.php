@@ -19,24 +19,14 @@ class MenuDinamicoController extends Controller
 
     public function crearMenu(Request $request)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'icono' => 'nullable|string|max:255',
-        ]);
-
-        $menu = Menu::create($validatedData);
+        $menu = Menu::create($request->all());
         return response()->json($menu, 201);
     }
 
     public function actualizarMenu(Request $request, $codMenu)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'icono' => 'nullable|string|max:255',
-        ]);
-
         $menu = Menu::findOrFail($codMenu);
-        $menu->update($validatedData);
+        $menu->update($request->all());
         return response()->json($menu, 200);
     }
 
@@ -55,27 +45,14 @@ class MenuDinamicoController extends Controller
 
     public function crearOpcion(Request $request)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'ruta' => 'required|string|max:255',
-            'icono' => 'nullable|string|max:255',
-            'codMenuF' => 'required|exists:menu,codMenu',
-        ]);
-
-        $opcion = Opcion::create($validatedData);
+        $opcion = Opcion::create($request->all());
         return response()->json($opcion, 201);
     }
 
     public function actualizarOpcion(Request $request, $codOpcion)
     {
-        $validatedData = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'ruta' => 'required|string|max:255',
-            'icono' => 'nullable|string|max:255',
-        ]);
-
         $opcion = Opcion::findOrFail($codOpcion);
-        $opcion->update($validatedData);
+        $opcion->update($request->all());
         return response()->json($opcion, 200);
     }
 
@@ -94,12 +71,7 @@ class MenuDinamicoController extends Controller
 
     public function crearPermiso(Request $request)
     {
-        $validatedData = $request->validate([
-            'codOpcionF' => 'required|exists:opcion,codOpcion',
-            'accion' => 'required|string|max:255',
-        ]);
-
-        $permiso = Permiso::create($validatedData);
+        $permiso = Permiso::create($request->all());
         return response()->json($permiso, 201);
     }
 
@@ -122,10 +94,7 @@ class MenuDinamicoController extends Controller
 
     public function agregarTipoUsuario(Request $request, $codPermiso)
     {
-        $validatedData = $request->validate([
-            'codTipoUsuarioF' => 'required|exists:TipoUsuario,codTipoUsuario',
-        ]);
-
+        $validatedData = $request->all();
         $validatedData['codPermisoF'] = $codPermiso;
 
         $tipoUsuarioPermiso = TipoUsuarioPermiso::create($validatedData);
