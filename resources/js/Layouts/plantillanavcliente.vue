@@ -7,15 +7,15 @@
       </a>
   
       <!-- Menú principal simplificado -->
-      <ul class="nav-links" :class="{ open: isMenuOpen }">
-        <li class="nav-item">
-          <a href="{{ route('vista-cliente') }}">Ir a Vista Cliente</a>
-        </li>
-        <li class="nav-item">
-          <a href="{{ route('mostrar.membresias') }}">Ver Membresías</a>
-  
-        </li>
-      </ul>
+<ul class="nav-links" :class="{ open: isMenuOpen }">
+    <li class="nav-item">
+        <a href="{{ route('mostrar.membresias') }}">Mis Membresías</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ route('vista-cliente') }}">Comprar Productos</a>
+    </li>
+</ul>
+
   
       <!-- Icono del Carrito de Compras -->
       <div class="cart-icon" @click="toggleCartModal">
