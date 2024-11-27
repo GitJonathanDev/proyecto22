@@ -112,11 +112,13 @@ export default {
       localStorage.setItem("selectedStyle", this.selectedStyle);
       localStorage.setItem("isDarkMode", JSON.stringify(this.isDarkMode));
 
-      const selectedHref = this.currentStyles[this.selectedStyle];
+      const basePath = `${window.location.origin}/inf513/grupo01cc/proyecto22/public/`; 
+      const selectedHref = basePath + this.currentStyles[this.selectedStyle];
 
-      const existingPageStyles = document.querySelectorAll('link[rel="stylesheet"][data-page-style]');
-      existingPageStyles.forEach(link => link.remove());
+      // Eliminar estilos previos
+      document.querySelectorAll('link[rel="stylesheet"][data-page-style]').forEach((link) => link.remove());
 
+      // Agregar el nuevo estilo
       const linkTag = document.createElement("link");
       linkTag.rel = "stylesheet";
       linkTag.href = selectedHref;
