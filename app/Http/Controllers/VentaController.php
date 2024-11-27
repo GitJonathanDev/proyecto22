@@ -110,6 +110,9 @@ class VentaController extends Controller
                 $detalleVenta->cantidad = $producto->cantidad; // Asumir que el objeto $producto tiene la propiedad 'cantidad'
                 $detalleVenta->precioV = $producto->precio; // Asumir que el objeto $producto tiene la propiedad 'precio'
                 $detalleVenta->save();
+            } else {
+                // En caso de que el producto no se encuentre, puedes manejarlo, por ejemplo:
+                return response()->json(['error' => 'Producto no encontrado: ' . $productoId], 404);
             }
         }
     
