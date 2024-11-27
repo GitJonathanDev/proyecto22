@@ -188,20 +188,27 @@ export default {
       console.error("Error al cerrar sesión:", error);
     });
 },
-    updateStyles() {
-      localStorage.setItem("selectedStyle", this.selectedStyle);
-      localStorage.setItem("isDarkMode", JSON.stringify(this.isDarkMode));
-      const selectedHref = this.currentStyles[this.selectedStyle];
-      const existingPageStyles = document.querySelectorAll(
-        'link[rel="stylesheet"][data-page-style]'
-      );
-      existingPageStyles.forEach((link) => link.remove());
-      const linkTag = document.createElement("link");
-      linkTag.rel = "stylesheet";
-      linkTag.href = selectedHref;
-      linkTag.setAttribute("data-page-style", "true");
-      document.head.appendChild(linkTag);
-    },
+updateStyles() {
+  localStorage.setItem("selectedStyle", this.selectedStyle);
+  localStorage.setItem("isDarkMode", JSON.stringify(this.isDarkMode));
+
+  // Generar la ruta completa para los estilos
+  const basePath = window.location.origin + "/inf513/grupo01cc/proyecto22/public/"; // Ajustar si la estructura cambia
+  const selectedHref = basePath + this.currentStyles[this.selectedStyle];
+
+  // Eliminar estilos previos aplicados
+  const existingPageStyles = document.querySelectorAll(
+    'link[rel="stylesheet"][data-page-style]'
+  );
+  existingPageStyles.forEach((link) => link.remove());
+
+  // Crear y agregar el nuevo estilo
+  const linkTag = document.createElement("link");
+  linkTag.rel = "stylesheet";
+  linkTag.href = selectedHref;
+  linkTag.setAttribute("data-page-style", "true");
+  document.head.appendChild(linkTag);
+},
     fetchMenuOptions() {
   axios
     .get(route('menus'))
