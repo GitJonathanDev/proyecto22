@@ -9,7 +9,7 @@ class TipoUsuarioPermiso extends Model
 {
     use HasFactory;
 
-    protected $table = '"tipoUsuarioPermiso"'; 
+    protected $table = 'tipoUsuarioPermiso'; 
     public $incrementing = false; // Indicar que no hay auto-incremento
     public $timestamps = true; // Si las migraciones tienen timestamps
 
