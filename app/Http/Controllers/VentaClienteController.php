@@ -90,7 +90,7 @@ class VentaClienteController extends Controller
             'fechaVenta' => now()->toDateString(),
             'montoTotal' => $montoTotal,
             'codClienteF' => $idCliente,
-            'codEncargadoF' => 12454859,
+            'codEncargadoF' => 11111111,
             'codPagoF' => $pago->codPago,
         ]);
 
@@ -103,10 +103,9 @@ class VentaClienteController extends Controller
             ]);
         }
 
-        // Devuelve un JSON con un mensaje y la ruta de redirección
         return response()->json([
             'success' => 'Compra realizada con éxito.',
-            'redirect' => route('vista-cliente'), // Devuelve la URL de redirección
+            'redirect' => route('vista-cliente'), 
         ]);
     }
 }

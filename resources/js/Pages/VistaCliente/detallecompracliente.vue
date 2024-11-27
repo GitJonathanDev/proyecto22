@@ -167,7 +167,7 @@ export default {
     },
     confirmarCompra() {
       axios
-        .post("/venta/create", {
+        .post("venta/create", {
           productos: this.productos,
           tnMonto: parseFloat(this.totalCarrito),
         })
