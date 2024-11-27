@@ -98,11 +98,13 @@ class VentaController extends Controller
     foreach ($productosSeleccionados as $producto) {
         $detalleVenta = new DetalleVenta();
         $detalleVenta->codVenta = $venta->codVenta;
-        $detalleVenta->codProducto = $producto->id;
+        // Asegúrate de que codProducto sea un string
+        $detalleVenta->codProducto = (string) $producto->id; 
         $detalleVenta->cantidad = $producto->cantidad;
         $detalleVenta->precioV = $producto->precio;
         $detalleVenta->save();
     }
+    
 
     // Redirigir a la página de la venta con Inertia
     return Inertia::location(route('venta.show', $venta->codVenta));
