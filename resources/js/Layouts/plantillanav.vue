@@ -204,9 +204,9 @@ export default {
     },
     fetchMenuOptions() {
   axios
-    .get(route('menus'))
+    .get(route('menus')) // Aquí "menus" es el nombre de la ruta registrada
     .then((response) => {
-      this.menuOptions = response.data;
+      this.menuOptions = response.data; // Cargar directamente las rutas generadas
     })
     .catch((error) => {
       console.error("Error al obtener las opciones del menú:", error);
@@ -307,6 +307,11 @@ async performSearch() {
   left: 0;
   z-index: 10;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+a.disabled {
+  pointer-events: none;
+  color: gray;
+  cursor: not-allowed;
 }
 
 .search-input {

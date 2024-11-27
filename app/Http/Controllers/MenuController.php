@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Opcion;
 use App\Models\Menu;
+use Illuminate\Support\Facades\Route;
+
 
 class MenuController extends Controller
 {
@@ -40,13 +42,13 @@ class MenuController extends Controller
                     }
 
                     if (!$opcionExistente) {
-                        $ruta = $opcion->ruta;
-                        $ruta = ltrim($ruta, '/');
+                        $ruta = $opcion->ruta; // Guardar el nombre de la ruta
+                        $url = Route::has($ruta) ? route($ruta) : null; // Generar URL solo si la ruta existe
 
                         $menuOptions[$menuName]['opciones'][] = [
                             'nombre' => $opcion->nombre,
                             'icono' => $opcion->icono,
-                            'ruta' => $ruta,  
+                            'ruta' => $url, // Usar la URL generada
                         ];
                     }
                 }
