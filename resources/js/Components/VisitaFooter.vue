@@ -17,11 +17,14 @@ export default {
   setup() {
     const visitaCount = ref(0);
 
+    // Generamos la URL de la API (en este caso, usamos una URL base dinámica)
+    const apiUrl = `${window.location.origin}/api/visitas`;
+
     // Función para obtener las visitas desde el backend
     const obtenerVisitas = async () => {
       try {
-        // Se hace una solicitud GET pasando la ruta como parámetro
-        const response = await axios.get('/api/visitas', {
+        // Hacemos la solicitud GET usando la URL completa de la API
+        const response = await axios.get(apiUrl, {
           params: { ruta: window.location.pathname }, // Enviar la ruta actual
         });
 
