@@ -70,7 +70,7 @@ Route::middleware([EnsureAuthenticated::class, VisitaPaginaMiddleware::class])->
     Route::get('/api/venta/productos', [VentaClienteController::class, 'obtenerProductos'])->name('venta.obtenerProductos');
     Route::get('/comprar/{idsYCantidades}', [VentaClienteController::class, 'mostrarDetalles'])->name('comprar.detalle');
 
-    Route::post('/venta/create', [VentaClienteController::class, 'store']);
+    Route::post('/venta/create', [VentaClienteController::class, 'store'])->name('comprarprosel');
 
 
 
