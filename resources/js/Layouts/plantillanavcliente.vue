@@ -6,17 +6,16 @@
         <span class="logo-body">Body</span><span class="logo-fit">Fit</span>
       </a>
   
-      <!-- Menú principal simplificado -->
-<ul class="nav-links" :class="{ open: isMenuOpen }">
-    <li class="nav-item">
-        <a href="{{ route('mostrar.membresias') }}">Mis Membresías</a>
-    </li>
-    <li class="nav-item">
-        <a href="{{ route('vista-cliente') }}">Comprar Productos</a>
-    </li>
-</ul>
-
-  
+   <!-- Menú principal simplificado -->
+   <ul class="nav-links" :class="{ open: isMenuOpen }">
+        <!-- Ruta modificada sin barra al principio -->
+        <li class="nav-item">
+          <a href="membresias">Mis Membresías</a> <!-- Quitamos la barra al principio -->
+        </li>
+        <li class="nav-item">
+          <a href="vista-cliente">Comprar Productos</a> <!-- Igualmente, quitamos la barra -->
+        </li>
+      </ul>
       <!-- Icono del Carrito de Compras -->
       <div class="cart-icon" @click="toggleCartModal">
         🛒
