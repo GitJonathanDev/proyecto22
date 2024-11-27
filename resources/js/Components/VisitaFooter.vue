@@ -20,8 +20,11 @@ export default {
     // Función para obtener las visitas desde el backend
     const obtenerVisitas = async () => {
       try {
+        // Obtener la URL de la ruta desde una variable global
+        const apiUrl = window.route('api.visitas');  // 'api.visitas' es el nombre de la ruta
+
         // Se hace una solicitud GET pasando la ruta como parámetro
-        const response = await axios.get('/api/visitas', {
+        const response = await axios.get(apiUrl, {
           params: { ruta: window.location.pathname }, // Enviar la ruta actual
         });
 

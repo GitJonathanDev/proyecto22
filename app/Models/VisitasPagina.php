@@ -29,7 +29,7 @@ class VisitasPagina extends Model
     // Relación con usuarios
     public function usuario()
     {
-        return $this->belongsTo(User::class, 'codUsuario', 'codUsuario');
+        return $this->belongsTo(user::class, 'codUsuario', 'codUsuario');
     }
 
     // Relación con páginas

@@ -15,11 +15,9 @@ class VisitaPaginaMiddleware
 
         if ($user && $paginaNombre) {
             DB::transaction(function () use ($user, $paginaNombre, $request) {
-                // Consultar si la página ya existe en la base de datos
                 $pagina = DB::table('Pagina')->where('nombrePagina', $paginaNombre)->first();
 
                 if (!$pagina) {
-                    // Si no existe, insertar la página con un conteo de visitas inicial de 0
                     $paginaId = DB::table('Pagina')->insertGetId([
                         'nombrePagina' => $paginaNombre,
                         'conteoVisitas' => 0,
@@ -27,21 +25,17 @@ class VisitaPaginaMiddleware
                 } else {
                     $paginaId = $pagina->id;
                 }
-
-                // Verificar si el usuario ya ha visitado esta página
                 $visita = DB::table('visitaPagina')
                     ->where('codUsuario', $user->codUsuario)
                     ->where('codPagina', $paginaId)
                     ->first();
 
                 if ($visita) {
-                    // Si ya ha visitado, incrementar el contador de visitas
                     DB::table('visitaPagina')
                         ->where('codUsuario', $user->codUsuario)
                         ->where('codPagina', $paginaId)
                         ->increment('cantidad', 1);
                 } else {
-                    // Si es una visita nueva, insertarla
                     DB::table('visitaPagina')->insert([
                         'codUsuario' => $user->codUsuario,
                         'codPagina' => $paginaId,
@@ -51,7 +45,6 @@ class VisitaPaginaMiddleware
                     ]);
                 }
 
-                // Actualizar el conteo total de visitas de la página
                 $totalVisitas = DB::table('visitaPagina')
                     ->where('codPagina', $paginaId)
                     ->sum('cantidad');
@@ -61,7 +54,7 @@ class VisitaPaginaMiddleware
                     ->update(['conteoVisitas' => $totalVisitas]);
 
                 // Compartir el conteo de visitas con la vista
-                $request->attributes->set('visitas_pagina', $totalVisitas);
+                $request->attributes->set('visitaPagina', $totalVisitas);
             });
         }
 

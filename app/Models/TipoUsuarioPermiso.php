@@ -10,12 +10,11 @@ class TipoUsuarioPermiso extends Model
     use HasFactory;
 
     protected $table = 'tipoUsuarioPermiso'; 
-    public $incrementing = false; // Indicar que no hay auto-incremento
-    public $timestamps = true; // Si las migraciones tienen timestamps
+    public $incrementing = false; 
+    public $timestamps = true; 
 
-    protected $fillable = ['codTipoUsuarioF', 'codPermisoF']; // Especifica campos que se pueden rellenar
+    protected $fillable = ['codTipoUsuarioF', 'codPermisoF']; 
 
-    // Deshabilitar la clave primaria predeterminada
     protected $primaryKey = null;
 
     /**
