@@ -225,27 +225,28 @@ Route::get('/reportes/compras', [ReporteVentaController::class, 'indexCompras'])
 
 
 
-    // Rutas para Menús
-    Route::get('/menus', [MenuDinamicoController::class, 'listarMenus']);
-    Route::post('/menus', [MenuDinamicoController::class, 'crearMenu']);
-    Route::put('/menus/{codMenu}', [MenuDinamicoController::class, 'actualizarMenu']);
-    Route::delete('/menus/{codMenu}', [MenuDinamicoController::class, 'eliminarMenu']);
-    
-    // Rutas para Opciones
-    Route::get('/menus/{codMenu}/opciones', [MenuDinamicoController::class, 'listarOpciones']);
-    Route::post('/opciones', [MenuDinamicoController::class, 'crearOpcion']);
-    Route::put('/opciones/{codOpcion}', [MenuDinamicoController::class, 'actualizarOpcion']);
-    Route::delete('/opciones/{codOpcion}', [MenuDinamicoController::class, 'eliminarOpcion']);
-    
-    // Rutas para Permisos
-    Route::get('/opciones/{codOpcion}/permisos', [MenuDinamicoController::class, 'listarPermisos']);
-    Route::post('/permisos', [MenuDinamicoController::class, 'crearPermiso']);
-    Route::delete('/permisos/{codPermiso}', [MenuDinamicoController::class, 'eliminarPermiso']);
-    
-    // Rutas para Tipos de Usuario con Permisos
-    Route::get('/permisos/{codPermiso}/tiposUsuario', [MenuDinamicoController::class, 'listarTiposUsuario']);
-    Route::post('/permisos/{codPermiso}/tiposUsuario', [MenuDinamicoController::class, 'agregarTipoUsuario']);
-    Route::delete('/permisos/{codPermiso}/tiposUsuario/{codTipoUsuario}', [MenuDinamicoController::class, 'quitarTipoUsuario']);
+   // Rutas para Menús
+Route::get('/menus', [MenuDinamicoController::class, 'listarMenus'])->name('menus.listar');
+Route::post('/menus', [MenuDinamicoController::class, 'crearMenu'])->name('menus.crear');
+Route::put('/menus/{codMenu}', [MenuDinamicoController::class, 'actualizarMenu'])->name('menus.actualizar');
+Route::delete('/menus/{codMenu}', [MenuDinamicoController::class, 'eliminarMenu'])->name('menus.eliminar');
+
+// Rutas para Opciones
+Route::get('/menus/{codMenu}/opciones', [MenuDinamicoController::class, 'listarOpciones'])->name('opciones.listar');
+Route::post('/opciones', [MenuDinamicoController::class, 'crearOpcion'])->name('opciones.crear');
+Route::put('/opciones/{codOpcion}', [MenuDinamicoController::class, 'actualizarOpcion'])->name('opciones.actualizar');
+Route::delete('/opciones/{codOpcion}', [MenuDinamicoController::class, 'eliminarOpcion'])->name('opciones.eliminar');
+
+// Rutas para Permisos
+Route::get('/opciones/{codOpcion}/permisos', [MenuDinamicoController::class, 'listarPermisos'])->name('permisos.listar');
+Route::post('/permisos', [MenuDinamicoController::class, 'crearPermiso'])->name('permisos.crear');
+Route::delete('/permisos/{codPermiso}', [MenuDinamicoController::class, 'eliminarPermiso'])->name('permisos.eliminar');
+
+// Rutas para Tipos de Usuario con Permisos
+Route::get('/permisos/{codPermiso}/tiposUsuario', [MenuDinamicoController::class, 'listarTiposUsuario'])->name('tiposUsuario.listar');
+Route::post('/permisos/{codPermiso}/tiposUsuario', [MenuDinamicoController::class, 'agregarTipoUsuario'])->name('tiposUsuario.agregar');
+Route::delete('/permisos/{codPermiso}/tiposUsuario/{codTipoUsuario}', [MenuDinamicoController::class, 'quitarTipoUsuario'])->name('tiposUsuario.quitar');
+
     
     
 });

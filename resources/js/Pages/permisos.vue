@@ -139,24 +139,24 @@ export default {
   methods: {
     // CRUD Menús
     async cargarMenus() {
-      const response = await axios.get("/menus");
+      const response = await axios.get(route('menus.listar'));
       this.menus = response.data;
     },
     nuevoMenu() {
       const nombre = prompt("Nombre del menú:");
       const icono = prompt("Ícono del menú (opcional):");
-      axios.post("/menus", { nombre, icono }).then(this.cargarMenus);
+      axios.post(route('menus.crear'), { nombre, icono }).then(this.cargarMenus);
     },
     editarMenu(menu) {
       const nombre = prompt("Nuevo nombre del menú:", menu.nombre);
       const icono = prompt("Nuevo ícono del menú:", menu.icono);
-      axios.put(`/menus/${menu.codMenu}`, { nombre, icono }).then(this.cargarMenus);
+      axios.put(route('menus.actualizar', { codMenu: menu.codMenu }), { nombre, icono }).then(this.cargarMenus);
     },
     eliminarMenu(codMenu) {
-      axios.delete(`/menus/${codMenu}`).then(this.cargarMenus);
+      axios.delete(route('menus.eliminar', { codMenu })).then(this.cargarMenus);
     },
     verOpciones(codMenu) {
-      axios.get(`/menus/${codMenu}/opciones`).then((response) => {
+      axios.get(route('opciones.listar', { codMenu })).then((response) => {
         this.opciones = response.data;
         this.menuSeleccionado = this.menus.find((m) => m.codMenu === codMenu);
       });
@@ -172,7 +172,7 @@ export default {
       const ruta = prompt("Ruta de la opción:");
       const icono = prompt("Ícono de la opción (opcional):");
       axios
-        .post("/opciones", {
+        .post(route('opciones.crear'), {
           nombre,
           ruta,
           icono,
@@ -185,14 +185,14 @@ export default {
       const ruta = prompt("Nueva ruta de la opción:", opcion.ruta);
       const icono = prompt("Nuevo ícono de la opción:", opcion.icono);
       axios
-        .put(`/opciones/${opcion.codOpcion}`, { nombre, ruta, icono })
+        .put(route('opciones.actualizar', { codOpcion: opcion.codOpcion }), { nombre, ruta, icono })
         .then(() => this.verOpciones(this.menuSeleccionado.codMenu));
     },
     eliminarOpcion(codOpcion) {
-      axios.delete(`/opciones/${codOpcion}`).then(() => this.verOpciones(this.menuSeleccionado.codMenu));
+      axios.delete(route('opciones.eliminar', { codOpcion })).then(() => this.verOpciones(this.menuSeleccionado.codMenu));
     },
     verPermisos(codOpcion) {
-      axios.get(`/opciones/${codOpcion}/permisos`).then((response) => {
+      axios.get(route('permisos.listar', { codOpcion })).then((response) => {
         this.permisos = response.data;
         this.opcionSeleccionada = this.opciones.find((o) => o.codOpcion === codOpcion);
       });
@@ -206,17 +206,17 @@ export default {
     nuevoPermiso() {
       const accion = prompt("Acción del permiso:");
       axios
-        .post("/permisos", {
+        .post(route('permisos.crear'), {
           accion,
           codOpcionF: this.opcionSeleccionada.codOpcion,
         })
         .then(() => this.verPermisos(this.opcionSeleccionada.codOpcion));
     },
     eliminarPermiso(codPermiso) {
-      axios.delete(`/permisos/${codPermiso}`).then(() => this.verPermisos(this.opcionSeleccionada.codOpcion));
+      axios.delete(route('permisos.eliminar', { codPermiso })).then(() => this.verPermisos(this.opcionSeleccionada.codOpcion));
     },
     verTiposUsuario(codPermiso) {
-      axios.get(`/permisos/${codPermiso}/tiposUsuario`).then((response) => {
+      axios.get(route('tiposUsuario.listar', { codPermiso })).then((response) => {
         this.tiposUsuario = response.data;
         this.permisoSeleccionado = this.permisos.find((p) => p.codPermiso === codPermiso);
       });
@@ -230,12 +230,12 @@ export default {
     agregarTipoUsuario() {
       const codTipoUsuarioF = prompt("ID del tipo de usuario a agregar:");
       axios
-        .post(`/permisos/${this.permisoSeleccionado.codPermiso}/tiposUsuario`, { codTipoUsuarioF })
+        .post(route('tiposUsuario.agregar', { codPermiso: this.permisoSeleccionado.codPermiso }), { codTipoUsuarioF })
         .then(() => this.verTiposUsuario(this.permisoSeleccionado.codPermiso));
     },
     quitarTipoUsuario(codTipoUsuario) {
       axios
-        .delete(`/permisos/${this.permisoSeleccionado.codPermiso}/tiposUsuario/${codTipoUsuario}`)
+        .delete(route('tiposUsuario.quitar', { codPermiso: this.permisoSeleccionado.codPermiso, codTipoUsuario }))
         .then(() => this.verTiposUsuario(this.permisoSeleccionado.codPermiso));
     },
   },
@@ -244,6 +244,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 /* Agrega estilos para mejorar la presentación */
