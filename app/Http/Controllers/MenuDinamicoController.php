@@ -84,10 +84,10 @@ class MenuDinamicoController extends Controller
     // TIPOS DE USUARIO CON PERMISOS
     public function listarTiposUsuario($codPermiso)
     {
-        $tiposUsuario = TipoUsuarioPermiso::with('tipoUsuario')
+        $tiposUsuario = tipoUsuarioPermiso::with('TipoUsuario')
             ->where('codPermisoF', $codPermiso)
             ->get()
-            ->pluck('tipoUsuario');
+            ->pluck('TipoUsuario');
 
         return response()->json($tiposUsuario, 200);
     }
@@ -97,13 +97,13 @@ class MenuDinamicoController extends Controller
         $validatedData = $request->all();
         $validatedData['codPermisoF'] = $codPermiso;
 
-        $tipoUsuarioPermiso = TipoUsuarioPermiso::create($validatedData);
+        $tipoUsuarioPermiso = tipoUsuarioPermiso::create($validatedData);
         return response()->json($tipoUsuarioPermiso, 201);
     }
 
     public function quitarTipoUsuario($codPermiso, $codTipoUsuario)
     {
-        TipoUsuarioPermiso::where('codPermisoF', $codPermiso)
+        tipoUsuarioPermiso::where('codPermisoF', $codPermiso)
             ->where('codTipoUsuarioF', $codTipoUsuario)
             ->delete();
 
