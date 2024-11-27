@@ -95,21 +95,20 @@ class VentaController extends Controller
         // Registrar detalles de la venta
         $productosSeleccionados = json_decode($request->productosSeleccionados);
     
-        // Asegurarse de que cada id de producto sea tratado como una cadena
-        $productosSeleccionados = array_map(function ($producto) {
-            return (string) $producto->id; // Convierte el id a cadena
-        }, $productosSeleccionados);
+        // Verificar que los productos seleccionados son un array de objetos con las propiedades correctas
+        foreach ($productosSeleccionados as $producto) {
+            // Asegurarse de que cada id de producto sea tratado como una cadena
+            $productoId = (string) $producto->id; // Convertir el id a string
     
-        foreach ($productosSeleccionados as $productoId) {
             // Buscar el producto por su código (como cadena)
-            $producto = Producto::where('codProducto', $productoId)->first();
+            $productoEncontrado = Producto::where('codProducto', $productoId)->first();
     
-            if ($producto) {
+            if ($productoEncontrado) {
                 $detalleVenta = new DetalleVenta();
                 $detalleVenta->codVenta = $venta->codVenta;
-                $detalleVenta->codProducto = $producto->codProducto;
-                $detalleVenta->cantidad = $producto->cantidad; // Asegúrate de tener este dato en el objeto producto
-                $detalleVenta->precioV = $producto->precio; // Asegúrate de tener este dato en el objeto producto
+                $detalleVenta->codProducto = $productoEncontrado->codProducto;
+                $detalleVenta->cantidad = $producto->cantidad; // Asumir que el objeto $producto tiene la propiedad 'cantidad'
+                $detalleVenta->precioV = $producto->precio; // Asumir que el objeto $producto tiene la propiedad 'precio'
                 $detalleVenta->save();
             }
         }
