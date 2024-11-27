@@ -20,7 +20,7 @@ class TipoUsuario extends Model
     ];
     public function permisos()
     {
-        return $this->belongsToMany(Permiso::class, 'TipoUsuarioPermiso', 'codTipoUsuarioF', 'codPermisoF');
+        return $this->belongsToMany(Permiso::class, 'tipoUsuarioPermiso', 'codTipoUsuarioF', 'codPermisoF');
     }
     
 }
