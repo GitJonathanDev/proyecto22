@@ -167,7 +167,7 @@ export default {
     },
     confirmarCompra() {
       axios
-        .post(window.routeComprarProsel, {
+        .post("/venta/create", {
           productos: this.productos,
           tnMonto: parseFloat(this.totalCarrito),
         })
@@ -186,12 +186,6 @@ export default {
     volver() {
       this.$router.push({ name: "cliente" });
     },
-    mounted() {
-    // Configurar la ruta globalmente
-    if (!window.routeComprarProsel) {
-      window.routeComprarProsel = "{{ route('comprarprosel') }}";
-    }
-  },
   },
 };
 </script>

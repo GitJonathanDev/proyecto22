@@ -41,6 +41,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(TipoUsuario::class, 'codTipoUsuarioF'); 
     }
+    public function encargado()
+    {
+        return $this->hasOne(Encargado::class, 'codUsuarioF', 'codUsuario');
+    }
     protected $appends = [
         'profile_photo_url',
     ];

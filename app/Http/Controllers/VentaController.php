@@ -45,51 +45,56 @@ class VentaController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Validar los datos de la venta
-        $request->validate([
-            'fechaVenta' => 'required|date',
-            'productosSeleccionados' => 'required|json',
-            'totalVenta' => 'required|numeric',
-            'codClienteF' => 'required|exists:cliente,carnetIdentidad',
-            'codEncargadoF' => 'required|exists:encargado,carnetIdentidad',
-        ]);
+{
+    // Validar los datos de la venta
+    $request->validate([
+        'fechaVenta' => 'required|date',
+        'productosSeleccionados' => 'required|json',
+        'totalVenta' => 'required|numeric',
+        'codClienteF' => 'required|exists:cliente,carnetIdentidad',
+    ]);
 
-        $codEncargadoF = 12454859;
-        $venta = new Venta();
-        $venta->fechaVenta = $request->fechaVenta;
-        $venta->codEncargadoF = $codEncargadoF; 
-        $venta->codClienteF = $request->codClienteF;
-        $venta->montoTotal = $request->totalVenta;
-        
+    // Obtener el encargado relacionado con el usuario autenticado
+    $user = $request->user();
+    $encargado = $user->encargado; // Asumiendo que tienes una relación definida en el modelo User
 
-        // Registrar el pago
-        $pago = new Pago();
-        $pago->fechaPago = now();
-        $pago->monto = $request->totalVenta;
-        $pago->estado = 'pagado';
-        $pago->codClienteF = $request->codClienteF;
-        $pago->save();
-
-        // Asociar el pago a la venta
-        $venta->codPagoF = $pago->codPago;
-        $venta->save();
-
-        // Registrar detalles de la venta
-        $productosSeleccionados = json_decode($request->productosSeleccionados);
-
-        foreach ($productosSeleccionados as $producto) {
-            $detalleVenta = new DetalleVenta();
-            $detalleVenta->codVenta = $venta->codVenta;
-            $detalleVenta->codProducto = $producto->id;
-            $detalleVenta->cantidad = $producto->cantidad;
-            $detalleVenta->precioV = $producto->precio;
-            $detalleVenta->save();
-        }
-
-        // Redirigir a la página de la venta con Inertia
-        return Inertia::location(route('venta.show', $venta->codVenta));
+    if (!$encargado) {
+        return response()->json(['error' => 'El usuario no tiene un encargado asociado.'], 403);
     }
+
+    $venta = new Venta();
+    $venta->fechaVenta = $request->fechaVenta;
+    $venta->codEncargadoF = $encargado->carnetIdentidad; // Usar el carnetIdentidad del encargado autenticado
+    $venta->codClienteF = $request->codClienteF;
+    $venta->montoTotal = $request->totalVenta;
+
+    // Registrar el pago
+    $pago = new Pago();
+    $pago->fechaPago = now();
+    $pago->monto = $request->totalVenta;
+    $pago->estado = 'pagado';
+    $pago->codClienteF = $request->codClienteF;
+    $pago->save();
+
+    // Asociar el pago a la venta
+    $venta->codPagoF = $pago->codPago;
+    $venta->save();
+
+    // Registrar detalles de la venta
+    $productosSeleccionados = json_decode($request->productosSeleccionados);
+
+    foreach ($productosSeleccionados as $producto) {
+        $detalleVenta = new DetalleVenta();
+        $detalleVenta->codVenta = $venta->codVenta;
+        $detalleVenta->codProducto = $producto->id;
+        $detalleVenta->cantidad = $producto->cantidad;
+        $detalleVenta->precioV = $producto->precio;
+        $detalleVenta->save();
+    }
+
+    // Redirigir a la página de la venta con Inertia
+    return Inertia::location(route('venta.show', $venta->codVenta));
+}
 
     // Mostrar detalles de una venta
     public function show($codVenta)
