@@ -97,11 +97,11 @@ class VentaController extends Controller
     
         // Verificar que los productos seleccionados son un array de objetos con las propiedades correctas
         foreach ($productosSeleccionados as $producto) {
-            // Asegurarse de que cada id de producto sea tratado como una cadena
-            $productoId = (string) $producto->id; // Convertir el id a string
+            // Convertir el id a cadena
+            $productoId = (string) $producto->id;
     
             // Buscar el producto por su código (como cadena)
-            $productoEncontrado = Producto::where('codProducto', $productoId)->first();
+            $productoEncontrado = Producto::where('codProducto', '=', $productoId)->first(); // Aseguramos el uso de 'string'
     
             if ($productoEncontrado) {
                 $detalleVenta = new DetalleVenta();
