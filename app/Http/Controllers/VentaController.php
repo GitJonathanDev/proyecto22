@@ -63,7 +63,7 @@ class VentaController extends Controller
         'fechaVenta' => 'required|date',
         'productosSeleccionados' => 'required|json',
         'totalVenta' => 'required|numeric',
-        'codClienteF' => 'required|exists:cliente,carnetIdentidad',
+        'codClienteF' => 'required|exists:Cliente,carnetIdentidad',
     ]);
 
     // Obtener el encargado relacionado con el usuario autenticado
