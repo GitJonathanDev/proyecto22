@@ -9,10 +9,11 @@
       <!-- Menú principal simplificado -->
       <ul class="nav-links" :class="{ open: isMenuOpen }">
         <li class="nav-item">
-          <a href="/membresias">Mis Membresías</a>
+          <a href="{{ route('vista-cliente') }}">Ir a Vista Cliente</a>
         </li>
         <li class="nav-item">
-          <a href="/vista-cliente">Comprar Productos</a>
+          <a href="{{ route('mostrar.membresias') }}">Ver Membresías</a>
+  
         </li>
       </ul>
   
@@ -60,7 +61,7 @@
   
         <span class="greeting">Hola, {{ userName }}</span>
         <button @click="logout" class="logout-btn">
-          <i class="fas fa-sign-out-alt"></i> 
+          <i class="fas fa-sign-out-alt"></i>
           Cerrar Sesión
         </button>
       </div>
@@ -98,13 +99,14 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
     logout() {
-      axios.post('/logout')
-        .then(response => {
+      axios
+        .post(route("logout"))
+        .then((response) => {
           console.log(response.data.message);
-          window.location.href = '/login';
+          window.location.href = route("login");
         })
-        .catch(error => {
-          console.error('Error al cerrar sesión:', error);
+        .catch((error) => {
+          console.error("Error al cerrar sesión:", error);
         });
     },
     updateStyles() {
