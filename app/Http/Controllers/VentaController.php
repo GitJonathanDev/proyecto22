@@ -28,14 +28,25 @@ class VentaController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $productos = Producto::all(); 
-        // $encargado = auth()->user();
-        $encargado = Encargado::where('carnetIdentidad', '12454859')->first();
+        // Obtener el usuario autenticado
+        $user = $request->user();
+    
+        // Obtener el encargado relacionado con el usuario autenticado
+        $encargado = $user->encargado; // Usar la relación definida en el modelo User
+    
+        if (!$encargado) {
+            // Si no existe un encargado relacionado, devolver un error
+            return response()->json(['error' => 'El usuario no tiene un encargado asociado.'], 403);
+        }
+    
+        // Obtener los datos necesarios para la vista
+        $productos = Producto::all();
         $categoria = Categoria::all();
         $clientes = Cliente::all();
-
+    
+        // Renderizar la vista con Inertia
         return Inertia::render('Venta/Create', [
             'productos' => $productos,
             'encargado' => $encargado,
@@ -43,6 +54,7 @@ class VentaController extends Controller
             'categoria' => $categoria
         ]);
     }
+    
 
     public function store(Request $request)
 {
