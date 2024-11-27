@@ -12,19 +12,19 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+// Importa Ziggy para usar el helper route()
+import route from 'ziggy-js';
+
 export default {
   name: 'VisitaFooter',
   setup() {
     const visitaCount = ref(0);
 
-    // Generamos la URL de la API (en este caso, usamos una URL base dinámica)
-    const apiUrl = `${window.location.origin}/api/visitas`;
-
     // Función para obtener las visitas desde el backend
     const obtenerVisitas = async () => {
       try {
-        // Hacemos la solicitud GET usando la URL completa de la API
-        const response = await axios.get(apiUrl, {
+        // Usamos el helper route() para generar la URL basada en el nombre de la ruta
+        const response = await axios.get(route('api.visitas'), {
           params: { ruta: window.location.pathname }, // Enviar la ruta actual
         });
 
