@@ -144,11 +144,12 @@ export default {
   data() {
     return {
       searchQuery: "",
-      filteredResults: [], // Resultados filtrados
+      filteredResults: [], // Agregado: Resultados filtrados
+      searchResults: ["Producto 1", "Servicio 2", "Otro item"], // Ejemplo de datos para búsqueda
       selectedStyle: localStorage.getItem("selectedStyle") || "defecto",
       isDarkMode: JSON.parse(localStorage.getItem("isDarkMode")) || false,
       isMenuOpen: false,
-      isSearchBarOpen: false, // Estado de la barra de búsqueda
+      isSearchBarOpen: false, // Agregado: Estado de la barra de búsqueda
       activeMenu: null,
       menuOptions: {},
     };
@@ -177,72 +178,65 @@ export default {
       this.activeMenu = null;
     },
     logout() {
-      axios
-        .post(route("logout")) // Usamos `route()` para generar la URL de la ruta 'logout'
-        .then((response) => {
-          console.log(response.data.message);
-          window.location.href = route("login"); // Redirige a la ruta 'login'
-        })
-        .catch((error) => {
-          console.error("Error al cerrar sesión:", error);
-        });
-    },
-    updateStyles() {
-      localStorage.setItem("selectedStyle", this.selectedStyle);
-      localStorage.setItem("isDarkMode", JSON.stringify(this.isDarkMode));
+  axios
+    .post(route('logout'))
+    .then((response) => {
+      console.log(response.data.message);
+      window.location.href = route('login'); 
+    })
+    .catch((error) => {
+      console.error("Error al cerrar sesión:", error);
+    });
+},
+updateStyles() {
+  localStorage.setItem("selectedStyle", this.selectedStyle);
+  localStorage.setItem("isDarkMode", JSON.stringify(this.isDarkMode));
 
-      // Generar la ruta completa para los estilos
-      const basePath = window.location.origin + "/inf513/grupo01cc/proyecto22/public/"; // Ajustar si la estructura cambia
-      const selectedHref = basePath + this.currentStyles[this.selectedStyle];
+  // Generar la ruta completa para los estilos
+  const basePath = window.location.origin + "/inf513/grupo01cc/proyecto22/public/"; // Ajustar si la estructura cambia
+  const selectedHref = basePath + this.currentStyles[this.selectedStyle];
 
-      // Eliminar estilos previos aplicados
-      const existingPageStyles = document.querySelectorAll(
-        'link[rel="stylesheet"][data-page-style]'
-      );
-      existingPageStyles.forEach((link) => link.remove());
+  // Eliminar estilos previos aplicados
+  const existingPageStyles = document.querySelectorAll(
+    'link[rel="stylesheet"][data-page-style]'
+  );
+  existingPageStyles.forEach((link) => link.remove());
 
-      // Crear y agregar el nuevo estilo
-      const linkTag = document.createElement("link");
-      linkTag.rel = "stylesheet";
-      linkTag.href = selectedHref;
-      linkTag.setAttribute("data-page-style", "true");
-      document.head.appendChild(linkTag);
-    },
+  // Crear y agregar el nuevo estilo
+  const linkTag = document.createElement("link");
+  linkTag.rel = "stylesheet";
+  linkTag.href = selectedHref;
+  linkTag.setAttribute("data-page-style", "true");
+  document.head.appendChild(linkTag);
+},
     fetchMenuOptions() {
-      axios
-        .get(route("menus")) // Usamos `route()` para la URL de 'menus'
-        .then((response) => {
-          this.menuOptions = response.data;
-        })
-        .catch((error) => {
-          console.error("Error al obtener las opciones del menú:", error);
-        });
-    },
-    async performSearch() {
-      if (this.searchQuery.trim() === "") {
-        this.filteredResults = [];
-        return;
-      }
+  axios
+    .get(route('menus'))
+    .then((response) => {
+      this.menuOptions = response.data;
+    })
+    .catch((error) => {
+      console.error("Error al obtener las opciones del menú:", error);
+    });
+},
+async performSearch() {
+  if (this.searchQuery.trim() === "") {
+    this.filteredResults = [];
+    return;
+  }
 
-      try {
-        const response = await axios.get(route("search"), {
-          // Usamos `route()` para la URL de búsqueda
-          params: {
-            query: this.searchQuery,
-          },
-        });
+  try {
+    const response = await axios.get(route('search'), {
+      params: {
+        query: this.searchQuery,
+      },
+    });
 
-        // Mapear resultados para asegurar que `ruta` usa `route()` adecuadamente
-        this.filteredResults = response.data.map((result) => {
-          return {
-            ...result,
-            ruta: route(result.ruta), // Generar la URL completa a partir del nombre de la ruta
-          };
-        });
-      } catch (error) {
-        console.error("Error en la búsqueda:", error);
-      }
-    },
+    this.filteredResults = response.data;
+  } catch (error) {
+    console.error("Error en la búsqueda:", error);
+  }
+},
   },
   computed: {
     currentStyles() {
@@ -275,7 +269,6 @@ export default {
   },
 };
 </script>
-
 
 
 
