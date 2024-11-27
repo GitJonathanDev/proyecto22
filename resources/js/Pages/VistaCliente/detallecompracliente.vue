@@ -166,26 +166,32 @@ export default {
       alert("Iniciar pago");
     },
     confirmarCompra() {
-  Inertia.post(route('comprarprosel'), {
-    productos: this.productos,
-    tnMonto: parseFloat(this.totalCarrito),
-  })
-  .then((response) => {
-    if (response.data.redirect) {
-      window.location.href = response.data.redirect;
-    } else {
-      alert(response.data.success || "Compra realizada con éxitos.");
-
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-    alert("Hubo un error al registrar la compra.");
-  });
-},
+      axios
+        .post(window.routeComprarProsel, {
+          productos: this.productos,
+          tnMonto: parseFloat(this.totalCarrito),
+        })
+        .then((response) => {
+          if (response.data.redirect) {
+            window.location.href = response.data.redirect;
+          } else {
+            alert(response.data.success || "Compra realizada con éxito.");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("Hubo un error al registrar la compra.");
+        });
+    },
     volver() {
       this.$router.push({ name: "cliente" });
     },
+    mounted() {
+    // Configurar la ruta globalmente
+    if (!window.routeComprarProsel) {
+      window.routeComprarProsel = "{{ route('comprarprosel') }}";
+    }
+  },
   },
 };
 </script>
