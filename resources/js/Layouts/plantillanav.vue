@@ -235,17 +235,17 @@ async performSearch() {
     currentStyles() {
       return {
         defecto: this.isDarkMode
-          ? "/css/estiloPagClienteOscuro.css"
-          : "/css/estiloPagClienteClaro.css",
+          ? "css/estiloPagClienteOscuro.css"
+          : "css/estiloPagClienteClaro.css",
         ninos: this.isDarkMode
-          ? "/css/estiloPagNinoOscuro.css"
-          : "/css/estiloPagNinoClaro.css",
+          ? "css/estiloPagNinoOscuro.css"
+          : "css/estiloPagNinoClaro.css",
         jovenes: this.isDarkMode
-          ? "/css/estiloPagJovenOscuro.css"
-          : "/css/estiloPagJovenClaro.css",
+          ? "css/estiloPagJovenOscuro.css"
+          : "css/estiloPagJovenClaro.css",
         adultos: this.isDarkMode
-          ? "/css/estiloPagAdultoOscuro.css"
-          : "/css/estiloPagAdultoClaro.css",
+          ? "css/estiloPagAdultoOscuro.css"
+          : "css/estiloPagAdultoClaro.css",
       };
     },
   },
