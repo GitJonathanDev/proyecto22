@@ -22,7 +22,7 @@ class SearchController extends Controller
                               return [
                                   'type' => 'opcion',
                                   'nombre' => $opcion->nombre,
-                                  'ruta' => $opcion->ruta,
+                                  'ruta' => route($opcion->ruta), // Convertimos la ruta en URL
                                   'icono' => 'fas fa-cogs', // Icono de engranaje
                               ];
                           });
@@ -35,7 +35,7 @@ class SearchController extends Controller
                                     return [
                                         'type' => 'proveedor',
                                         'nombre' => $proveedor->nombre,
-                                        'ruta' => route('proveedor.index', ['buscar' => $proveedor->nombre]),
+                                        'ruta' => route('proveedor.index', ['buscar' => $proveedor->nombre]), // Aquí usamos `route`
                                         'icono' => 'fas fa-pencil-alt', // Icono de lápiz
                                     ];
                                 });

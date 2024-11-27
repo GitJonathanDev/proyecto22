@@ -12,31 +12,36 @@
       </div>
 
       <!-- Barra de búsqueda con ícono -->
-<div class="search-wrapper">
-  <button class="search-icon" @click="toggleSearchBar">
-    <i class="fas fa-search"></i>
-  </button>
-  <div v-if="isSearchBarOpen" class="search-bar">
-    <input
-      type="text"
-      class="search-input"
-      placeholder="Buscar..."
-      v-model="searchQuery"
-      @input="performSearch"
-    />
-    <button @click="clearSearch" class="search-clear-btn">
-      <i class="fas fa-times" v-if="searchQuery"></i>
+     
+  <div class="search-wrapper">
+    <!-- Botón de ícono de búsqueda -->
+    <button class="search-icon" @click="toggleSearchBar">
+      <i class="fas fa-search"></i>
     </button>
-    <ul v-if="filteredResults.length" class="dropdown-search-results">
-  <li v-for="(result, index) in filteredResults" :key="index">
-    <a :href="result.ruta">
-      <i :class="result.icono"></i> {{ result.nombre }}
-    </a>
-  </li>
-</ul>
-  </div>
-</div>
 
+    <!-- Barra de búsqueda -->
+    <div v-if="isSearchBarOpen" class="search-bar">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar..."
+        v-model="searchQuery"
+        @input="performSearch"
+      />
+      <button @click="clearSearch" class="search-clear-btn">
+        <i class="fas fa-times" v-if="searchQuery"></i>
+      </button>
+
+      <!-- Resultados de búsqueda -->
+      <ul v-if="filteredResults.length" class="dropdown-search-results">
+        <li v-for="(result, index) in filteredResults" :key="index">
+          <a :href="result.ruta">
+            <i :class="result.icono"></i> {{ result.nombre }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 
       <!-- Menú principal con opciones desplegables tipo acordeón -->
       <ul class="nav-links" :class="{ 'active': isMenuOpen }">
@@ -144,14 +149,13 @@ export default {
   data() {
     return {
       searchQuery: "",
-      filteredResults: [], // Agregado: Resultados filtrados
-      searchResults: ["Producto 1", "Servicio 2", "Otro item"], // Ejemplo de datos para búsqueda
+      filteredResults: [], // Resultados filtrados de búsqueda
       selectedStyle: localStorage.getItem("selectedStyle") || "defecto",
       isDarkMode: JSON.parse(localStorage.getItem("isDarkMode")) || false,
       isMenuOpen: false,
-      isSearchBarOpen: false, // Agregado: Estado de la barra de búsqueda
+      isSearchBarOpen: false, // Estado de la barra de búsqueda
       activeMenu: null,
-      menuOptions: {},
+      menuOptions: {}, // Opciones del menú
     };
   },
   methods: {
@@ -178,65 +182,60 @@ export default {
       this.activeMenu = null;
     },
     logout() {
-  axios
-    .post(route('logout'))
-    .then((response) => {
-      console.log(response.data.message);
-      window.location.href = route('login'); 
-    })
-    .catch((error) => {
-      console.error("Error al cerrar sesión:", error);
-    });
-},
-updateStyles() {
-  localStorage.setItem("selectedStyle", this.selectedStyle);
-  localStorage.setItem("isDarkMode", JSON.stringify(this.isDarkMode));
+      axios
+        .post(route("logout"))
+        .then((response) => {
+          console.log(response.data.message);
+          window.location.href = route("login");
+        })
+        .catch((error) => {
+          console.error("Error al cerrar sesión:", error);
+        });
+    },
+    updateStyles() {
+      localStorage.setItem("selectedStyle", this.selectedStyle);
+      localStorage.setItem("isDarkMode", JSON.stringify(this.isDarkMode));
 
-  // Generar la ruta completa para los estilos
-  const basePath = window.location.origin + "/inf513/grupo01cc/proyecto22/public/"; // Ajustar si la estructura cambia
-  const selectedHref = basePath + this.currentStyles[this.selectedStyle];
+      const basePath = `${window.location.origin}/inf513/grupo01cc/proyecto22/public/`; // Ajusta según la estructura
+      const selectedHref = basePath + this.currentStyles[this.selectedStyle];
 
-  // Eliminar estilos previos aplicados
-  const existingPageStyles = document.querySelectorAll(
-    'link[rel="stylesheet"][data-page-style]'
-  );
-  existingPageStyles.forEach((link) => link.remove());
+      // Eliminar estilos previos
+      document.querySelectorAll('link[rel="stylesheet"][data-page-style]').forEach((link) => link.remove());
 
-  // Crear y agregar el nuevo estilo
-  const linkTag = document.createElement("link");
-  linkTag.rel = "stylesheet";
-  linkTag.href = selectedHref;
-  linkTag.setAttribute("data-page-style", "true");
-  document.head.appendChild(linkTag);
-},
+      // Agregar el nuevo estilo
+      const linkTag = document.createElement("link");
+      linkTag.rel = "stylesheet";
+      linkTag.href = selectedHref;
+      linkTag.setAttribute("data-page-style", "true");
+      document.head.appendChild(linkTag);
+    },
     fetchMenuOptions() {
-  axios
-    .get(route('menus'))
-    .then((response) => {
-      this.menuOptions = response.data;
-    })
-    .catch((error) => {
-      console.error("Error al obtener las opciones del menú:", error);
-    });
-},
-async performSearch() {
-  if (this.searchQuery.trim() === "") {
-    this.filteredResults = [];
-    return;
-  }
+      axios
+        .get(route("menus"))
+        .then((response) => {
+          this.menuOptions = response.data;
+        })
+        .catch((error) => {
+          console.error("Error al obtener las opciones del menú:", error);
+        });
+    },
+    async performSearch() {
+      if (this.searchQuery.trim() === "") {
+        this.filteredResults = [];
+        return;
+      }
 
-  try {
-    const response = await axios.get(route('search'), {
-      params: {
-        query: this.searchQuery,
-      },
-    });
-
-    this.filteredResults = response.data;
-  } catch (error) {
-    console.error("Error en la búsqueda:", error);
-  }
-},
+      try {
+        const response = await axios.get(route("search"), {
+          params: {
+            query: this.searchQuery,
+          },
+        });
+        this.filteredResults = response.data;
+      } catch (error) {
+        console.error("Error en la búsqueda:", error);
+      }
+    },
   },
   computed: {
     currentStyles() {
@@ -260,8 +259,7 @@ async performSearch() {
     this.updateStyles();
     if (!document.querySelector('link[href*="font-awesome"]')) {
       const faLink = document.createElement("link");
-      faLink.href =
-        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
+      faLink.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
       faLink.rel = "stylesheet";
       document.head.appendChild(faLink);
     }
@@ -269,6 +267,7 @@ async performSearch() {
   },
 };
 </script>
+
 
 
 
