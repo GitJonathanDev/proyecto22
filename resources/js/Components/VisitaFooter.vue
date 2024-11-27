@@ -12,18 +12,6 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-// Definir la función window.route en el propio componente Vue
-if (!window.route) {
-  window.route = function(name, params = {}) {
-    // Aquí se asume que la ruta siempre será de tipo '/api/{name}', ajusta esto según tu aplicación.
-    const routes = {
-      'api.visitas': '/api/visitas',  // Mapea el nombre de la ruta 'api.visitas' a la URL
-    };
-
-    return routes[name] || '/'; // Devuelve la ruta si existe, o '/' por defecto
-  };
-}
-
 export default {
   name: 'VisitaFooter',
   setup() {
@@ -32,15 +20,12 @@ export default {
     // Función para obtener las visitas desde el backend
     const obtenerVisitas = async () => {
       try {
-        // Obtener la URL de la ruta usando window.route
-        const apiUrl = window.route('api.visitas');  // 'api.visitas' es el nombre de la ruta
-
-        // Hacer la solicitud GET pasando la ruta como parámetro
-        const response = await axios.get(apiUrl, {
+        // Se hace una solicitud GET pasando la ruta como parámetro
+        const response = await axios.get('/api/visitas', {
           params: { ruta: window.location.pathname }, // Enviar la ruta actual
         });
 
-        // Asignar el conteo de visitas si se recibe una respuesta válida
+        // Asignar el conteo de visitas al estado reactivo si se recibe una respuesta válida
         if (response.data && typeof response.data.visitas === 'number') {
           visitaCount.value = response.data.visitas;
         }
