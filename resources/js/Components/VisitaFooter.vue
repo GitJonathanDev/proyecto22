@@ -20,11 +20,21 @@ export default {
     // Función para obtener las visitas desde el backend
     const obtenerVisitas = async () => {
       try {
-        // Se hace una solicitud GET pasando la ruta como parámetro
+        // Obtener la ruta actual del navegador
+        let ruta = window.location.pathname;
+
+        // Eliminar el prefijo si está presente
+        const prefijo = '/inf513/grupo01cc/proyecto22/public';
+        if (ruta.startsWith(prefijo)) {
+          ruta = ruta.replace(prefijo, ''); // Eliminar el prefijo
+        }
+
+        // Realizar la solicitud GET al backend
         const response = await axios.get(route('api.visitas'), {
-          params: { ruta: window.location.pathname },
+          params: { ruta },
         });
 
+        // Actualizar el contador de visitas
         if (response.data && typeof response.data.visitas === 'number') {
           visitaCount.value = response.data.visitas;
         }
@@ -44,6 +54,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 footer {
