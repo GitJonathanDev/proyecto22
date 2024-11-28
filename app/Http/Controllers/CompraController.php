@@ -86,35 +86,21 @@ class CompraController extends Controller
             'detalleCompra' => $compra->detalleCompra, 
         ]);
     }
-    public function show($codCompra)
-    {
-        // Imprime lo que está recibiendo como parámetro
-        dd('Recibiendo codCompra:', $codCompra);
-    
-        // Consulta de la compra con las relaciones de proveedor y encargado
-        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
-    
-        // Imprime lo que está recibiendo de la base de datos
-        dd('Compra recibida:', $compra);
-    
-        // Consulta de los detalles de la compra
-        $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra);
-    
-        // Muestra la consulta SQL generada por Eloquent antes de ejecutarla
-        dd('Consulta SQL generada para los detalles de la compra:', $detalleCompra->toSql());
-    
-        // Ejecuta la consulta y obtiene los resultados
-        $detalleCompra = $detalleCompra->get();
-    
-        // Imprime los detalles de la compra antes de enviarlos
-        dd('Detalle de compra enviado:', $detalleCompra);
-    
-        return Inertia::render('Compra/Detalle', [
-            'compra' => $compra,
-            'detalleCompra' => $detalleCompra
-        ]);
-    }
-    
+    public function show($codProducto)
+{
+    // Convertir el valor a texto (string) para coincidir con el tipo 'character varying' de la base de datos
+    $codProducto = (string) $codProducto;
+
+    $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codProducto); 
+    $detalleCompra = DetalleCompra::with('producto')
+        ->where('codProducto', $codProducto)  // Asegúrate de que el valor sea texto
+        ->get();
+
+    return Inertia::render('Compra/Detalle', [
+        'compra' => $compra,
+        'detalleCompra' => $detalleCompra
+    ]);
+}
     
     
 
