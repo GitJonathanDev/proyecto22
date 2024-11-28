@@ -88,19 +88,24 @@ class CompraController extends Controller
     }
     public function show($codCompra)
 {
-    // Asegúrate de que el valor de $codCompra es un string
+    // Asegurarse de que el valor de $codCompra es un string
     $codCompra = (string) $codCompra;
 
     // Buscar la compra con sus relaciones
     $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
 
-    // Obtener los detalles de la compra asegurando el tipo string para codProducto
+    // Obtener los detalles de la compra
     $detalleCompra = DetalleCompra::where('codCompra', $codCompra)
         ->get()
-        ->each(function ($detalle) {
-            // Asegurar que codProducto sea siempre tratado como un string
+        ->map(function ($detalle) {
+            // Asegurarse que el codProducto sea tratado como un string
             $detalle->codProducto = (string) $detalle->codProducto;
-            $detalle->load('producto'); // Cargar relación con producto
+
+            // Cargar la relación con Producto y aplicar CAST a codProducto
+            $detalle->producto = Producto::whereRaw('CAST("codProducto" AS VARCHAR) = ?', [$detalle->codProducto])
+                ->first();
+
+            return $detalle;
         });
 
     // Renderizar la vista con Inertia
