@@ -88,14 +88,24 @@ class CompraController extends Controller
     }
     public function show($codCompra)
     {
-        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra); 
-        $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra)->get();
+        // Aseguramos que codCompra sea tratado como un entero
+        $codCompra = (int) $codCompra;
+    
+        // Consulta de la compra con las relaciones de proveedor y encargado
+        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
+        
+        // Consulta de los detalles de la compra
+        // Aquí convertimos `codCompra` a string para evitar problemas con el tipo de datos en la base de datos
+        $detalleCompra = DetalleCompra::with('producto')
+            ->whereRaw('CAST("codProducto" AS TEXT) = ?', [(string)$codCompra])  // Usamos CAST a string para comparación
+            ->get();
     
         return Inertia::render('Compra/Detalle', [
             'compra' => $compra,
             'detalleCompra' => $detalleCompra
         ]);
     }
+    
     
 
 
