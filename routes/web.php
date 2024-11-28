@@ -51,6 +51,10 @@ Route::middleware([
 
 Route::get('/api/visitas', [VisitaController::class, 'obtenerVisitas'])->name('api.visitas');
 
+Route::get('/favicon.ico', function () {
+    return response('', 204); 
+});
+
 Route::middleware([EnsureAuthenticated::class, VisitaPaginaMiddleware::class])->group(function () {
     Route::get('/vista-cliente', function () {
         return Inertia::render('VistaCliente/compracliente');
