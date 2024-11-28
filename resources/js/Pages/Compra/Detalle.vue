@@ -24,7 +24,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="detalle in detalleCompra" :key="detalle.codProducto" class="border-t border-gray-200">
+            <tr v-for="detalle in detalleCompra" :key="String(detalle.codProducto)" class="border-t border-gray-200">
+
               <td class="px-4 py-2">
                 <img 
                   v-if="detalle.producto && detalle.producto.imagen_url"
