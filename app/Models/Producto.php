@@ -9,15 +9,16 @@ class Producto extends Model
 {
     use HasFactory;
 
+    // Nombre de la tabla
     protected $table = 'Producto';
 
-
+    // Clave primaria
     protected $primaryKey = 'codProducto';
 
- 
+    // Clave no incremental
     public $incrementing = false;
 
-
+    // Atributos que se pueden asignar en masa
     protected $fillable = [
         'codProducto', 
         'nombre',
@@ -28,22 +29,26 @@ class Producto extends Model
         'codCategoriaF',
     ];
 
-
+    // Conversión de atributos
     protected $casts = [
-        'codProducto'=>'string',
+        'codProducto' => 'string', // Garantiza que siempre se trate como string
         'precio' => 'float',
         'stock' => 'integer',
         'codCategoriaF' => 'integer', 
     ];
 
+    // Relación con Categoría
     public function categoria()
     {
         return $this->belongsTo(Categoria::class, 'codCategoriaF', 'codCategoria'); 
     }
+
+    // Relación con DetalleVenta
     public function detalles()
     {
         return $this->hasMany(DetalleVenta::class, 'codProducto', 'codProducto');
     }
 
+    // Desactiva las marcas de tiempo
     public $timestamps = false;
 }
