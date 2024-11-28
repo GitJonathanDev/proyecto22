@@ -88,24 +88,19 @@ class CompraController extends Controller
     }
     public function show($codCompra)
     {
+        // Convertir $codCompra a texto para que coincida con el tipo character varying
+        $codCompra = (string) $codCompra;
+    
         $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra); 
-        
-        // Convertir el codProducto a string en la consulta para evitar el error
         $detalleCompra = DetalleCompra::with('producto')
-            ->where('codCompra', $codCompra)
-            ->get()
-            ->map(function ($detalle) {
-                // Asegurarse de que el codProducto sea tratado como string
-                $detalle->codProducto = strval($detalle->codProducto);
-                return $detalle;
-            });
-        
+            ->where('codCompra', $codCompra) // Asegúrate de que este valor es un string
+            ->get();
+    
         return Inertia::render('Compra/Detalle', [
             'compra' => $compra,
             'detalleCompra' => $detalleCompra
-        ]); 
+        ]);
     }
-    
     
     
 
