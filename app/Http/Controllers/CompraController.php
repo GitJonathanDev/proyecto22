@@ -90,7 +90,7 @@ class CompraController extends Controller
     {
         $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra); 
         
-        // Convertir el codProducto a string en la consulta para evitar el error de tipo
+        // Convertir el codProducto a string en la consulta para evitar el error
         $detalleCompra = DetalleCompra::with('producto')
             ->where('codCompra', $codCompra)
             ->get()
@@ -103,7 +103,7 @@ class CompraController extends Controller
         return Inertia::render('Compra/Detalle', [
             'compra' => $compra,
             'detalleCompra' => $detalleCompra
-        ]);
+        ]); 
     }
     
     
