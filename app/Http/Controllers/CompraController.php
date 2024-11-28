@@ -88,6 +88,9 @@ class CompraController extends Controller
     }
     public function show($codCompra)
 {
+    // Asegúrate de que el valor de $codCompra es un string
+    $codCompra = (string) $codCompra;
+
     // Buscar la compra con sus relaciones
     $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
 
@@ -95,16 +98,15 @@ class CompraController extends Controller
     $detalleCompra = DetalleCompra::where('codCompra', $codCompra)
         ->get()
         ->each(function ($detalle) {
-            $detalle->codProducto = (string) $detalle->codProducto; // Asegurar cadena
-            $detalle->load(['producto' => function ($query) {
-                $query->whereRaw('CAST("codProducto" AS VARCHAR) = codProducto'); // Forzar cadena en consulta
-            }]);
+            // Asegurar que codProducto sea siempre tratado como un string
+            $detalle->codProducto = (string) $detalle->codProducto;
+            $detalle->load('producto'); // Cargar relación con producto
         });
 
-    // Renderizar con Inertia
+    // Renderizar la vista con Inertia
     return Inertia::render('Compra/Detalle', [
         'compra' => $compra,
-        'detalleCompra' => $detalleCompra,
+        'detalleCompra' => $detalleCompra
     ]);
 }
 
