@@ -299,7 +299,7 @@ export default {
     const searchClient = async () => {
       if (form.clienteSearch.length >= 2) {
         try {
-          const response = await axios.get(`/clientes/buscar?query=${form.clienteSearch}`);
+          const response = await axios.get(`clientes/buscar?query=${form.clienteSearch}`);
           clientes.value = response.data;
         } catch (error) {
           console.error(error);
