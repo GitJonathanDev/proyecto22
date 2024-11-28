@@ -88,21 +88,16 @@ class CompraController extends Controller
     }
     public function show($codCompra)
     {
-        // Obtener la compra con las relaciones
-        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
+        
+        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra); 
+        $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra)->get();
     
-        // Obtener el detalle de la compra con los productos, usando el JOIN con la tabla Producto
-        $detalleCompra = DetalleCompra::with('producto')
-            ->join('Producto', 'Producto.codProducto', '=', 'DetalleCompra.codProducto')  // Hacemos el JOIN con la tabla Producto
-            ->where('DetalleCompra.codCompra', '=', $codCompra)  // Filtro por codCompra
-            ->get();
-    
-        // Retornar la vista con los datos
         return Inertia::render('Compra/Detalle', [
             'compra' => $compra,
             'detalleCompra' => $detalleCompra
         ]);
     }
+    
 
 
     public function buscarProductos(Request $request)
