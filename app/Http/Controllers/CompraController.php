@@ -91,10 +91,10 @@ class CompraController extends Controller
         // Obtener la compra con las relaciones
         $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
     
-        // Asegúrate de que codProducto es tratado como texto en la consulta
+        // Obtener el detalle de la compra con los productos, usando el JOIN con la tabla Producto
         $detalleCompra = DetalleCompra::with('producto')
             ->join('Producto', 'Producto.codProducto', '=', 'DetalleCompra.codProducto')  // Hacemos el JOIN con la tabla Producto
-            ->where('Producto.codProducto', '=', (string) $codCompra)  // Convertir codCompra a texto explícitamente si es necesario
+            ->where('DetalleCompra.codCompra', '=', $codCompra)  // Filtro por codCompra
             ->get();
     
         // Retornar la vista con los datos
