@@ -98,11 +98,17 @@ class CompraController extends Controller
         dd('Compra recibida:', $compra);
     
         // Consulta de los detalles de la compra
-        $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra)->get();
+        $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra);
+    
+        // Muestra la consulta SQL generada por Eloquent antes de ejecutarla
+        dd('Consulta SQL generada para los detalles de la compra:', $detalleCompra->toSql());
+    
+        // Ejecuta la consulta y obtiene los resultados
+        $detalleCompra = $detalleCompra->get();
     
         // Imprime los detalles de la compra antes de enviarlos
         dd('Detalle de compra enviado:', $detalleCompra);
-        
+    
         return Inertia::render('Compra/Detalle', [
             'compra' => $compra,
             'detalleCompra' => $detalleCompra
