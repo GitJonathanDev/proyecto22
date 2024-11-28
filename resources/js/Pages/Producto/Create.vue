@@ -118,9 +118,7 @@
                   @change="handleImageChange"
                 />
                 <img v-if="imagePreview" :src="imagePreview" alt="Previsualización" class="img-fluid mt-2" />
-                <div v-if="!validateImagen() && form.imagen" class="text-red-500 text-sm dd">
-                  * La imagen es obligatoria.
-                </div>
+
               </div>
 
               <!-- Botones -->
@@ -186,10 +184,9 @@ const validateNombre = () => validateField('nombre');
 const validateDescripcion = () => validateField('descripcion');
 const validatePrecio = () => validateField('precio');
 const validateCategoria = () => validateField('codCategoriaF');
-const validateImagen = () => validateField('imagen');
 
 const isFormValid = computed(() =>
-  ['codProducto', 'nombre', 'descripcion', 'precio', 'codCategoriaF', 'imagen'].every(validateField)
+  ['codProducto', 'nombre', 'descripcion', 'precio', 'codCategoriaF'].every(validateField)
 );
 
 const handleImageChange = (e) => {
