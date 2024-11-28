@@ -91,7 +91,8 @@ class CompraController extends Controller
         $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
     
         $detalleCompra = DetalleCompra::with(['producto' => function ($query) {
-            $query->selectRaw('*, codProducto::varchar as codProducto');
+            // Cast explícito con referencia completa
+            $query->selectRaw('"Producto".*, "Producto"."codProducto"::varchar as "codProducto"');
         }])
         ->where('codCompra', $codCompra)
         ->get();
