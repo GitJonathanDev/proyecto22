@@ -21,9 +21,9 @@ export default {
     const obtenerVisitas = async () => {
       try {
         // Se hace una solicitud GET pasando la ruta como parámetro
-        const response = await axios.get(`${window.location.origin}/api/visitas`, {
-  params: { ruta: window.location.pathname }, // Enviar la ruta actual
-});
+        const response = await axios.get('api/visitas', {
+          params: { ruta: window.location.pathname }, // Enviar la ruta actual
+        });
 
         // Asignar el conteo de visitas al estado reactivo si se recibe una respuesta válida
         if (response.data && typeof response.data.visitas === 'number') {

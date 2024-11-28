@@ -32,12 +32,8 @@ class VisitaController extends Controller
     // Función para obtener el nombre de la ruta
     private function obtenerNombreRuta($ruta)
     {
-        // Ajustar la ruta eliminando prefijos innecesarios
-        $basePath = '/inf513/grupo01cc/proyecto22/public';
-        $rutaAjustada = str_replace($basePath, '', $ruta);
-    
-        // Resolver la ruta ajustada
-        $route = Route::getRoutes()->match(Request::create($rutaAjustada));
+        // Obtener la ruta registrada por su nombre
+        $route = Route::getRoutes()->match(Request::create($ruta));
         return $route ? $route->getName() : null;
     }
 }
