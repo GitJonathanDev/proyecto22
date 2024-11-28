@@ -86,16 +86,17 @@ class CompraController extends Controller
             'detalleCompra' => $compra->detalleCompra, 
         ]);
     }
-    public function show($codProducto)
+    public function show($codCompra)
 {
-    // Convertir el valor a texto (string) para coincidir con el tipo 'character varying' de la base de datos
-    $codProducto = (string) $codProducto;
+    // Obtener la compra con las relaciones
+    $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
 
-    $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codProducto); 
+    // Obtener el detalle de la compra con productos, convirtiendo 'codProducto' a texto
     $detalleCompra = DetalleCompra::with('producto')
-        ->where('codProducto', $codProducto)  // Asegúrate de que el valor sea texto
+        ->whereRaw('CAST("Producto"."codProducto" AS text) = ?', [(string) $codCompra]) // Convertir 'codProducto' a texto y comparar
         ->get();
 
+    // Retornar la vista con los datos
     return Inertia::render('Compra/Detalle', [
         'compra' => $compra,
         'detalleCompra' => $detalleCompra
