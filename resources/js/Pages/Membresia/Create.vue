@@ -238,11 +238,12 @@ import { ref, reactive, computed } from "vue";
 import { useForm, router } from '@inertiajs/vue3';
 import plantillanav from '@/Layouts/plantillanav.vue';
 import axios from "axios";
+import route from 'ziggy-js'; // Importar Ziggy para generar rutas
 
 export default {
   name: "VentaMembresia",
   components: {
-    plantillanav, 
+    plantillanav,
   },
   setup() {
     const form = useForm({
@@ -270,7 +271,7 @@ export default {
     });
     const qrUrl = ref('');
     const selectedTipo = reactive({});
-    const cantidad = reactive({});  // Mantener la cantidad de cada servicio
+    const cantidad = reactive({});
     const errors = ref([]);
 
     const isSubmitDisabled = computed(() => {
@@ -280,32 +281,33 @@ export default {
         serviciosSeleccionados.value.length === 0
       );
     });
+
     const submit = () => {
       form.post(route('consumirServicio'), {
-        // No hacemos ninguna redirección aquí, solo enviamos el formulario.
         onSuccess: () => {
-          console.log('Formulario enviado exitosamente'); // O cualquier otra acción si lo deseas.
+          console.log('Formulario enviado exitosamente');
         },
       });
     };
 
     const precioTotal = computed(() => {
       return serviciosSeleccionados.value.reduce(
-        (total, servicio) => total + servicio.subTotal,  // Usar subTotal en lugar de precio * cantidad
+        (total, servicio) => total + servicio.subTotal,
         0
       );
     });
 
     const searchClient = async () => {
-  if (form.value.clienteSearch.length >= 2) {
-    try {
-      const response = await axios.get(route('clientes.buscar', { query: form.value.clienteSearch }));
-      clientes.value = response.data;
-    } catch (error) {
-      console.error('Error al buscar clientes:', error);
-    }
-  }
-};
+      if (form.clienteSearch.trim().length >= 2) { // Validación para evitar errores
+        try {
+          // Usar la función `route` para generar la URL de la ruta `clientes.buscar`
+          const response = await axios.get(route('clientes.buscar', { query: form.clienteSearch.trim() }));
+          clientes.value = response.data;
+        } catch (error) {
+          console.error('Error al buscar clientes:', error);
+        }
+      }
+    };
 
     const selectClient = (cliente) => {
       if (cliente && cliente.carnetIdentidad) {
@@ -313,7 +315,6 @@ export default {
         form.telefono = cliente.telefono;
         form.clienteSearch = `${cliente.nombre} ${cliente.apellidoPaterno}`;
         clientes.value = [];
-        verificarEstadoBoton();
       }
     };
 
@@ -322,109 +323,14 @@ export default {
         const response = await axios.get(`/servicios/buscar?search=${search.nombreServicio}`);
         servicios.value = response.data;
       } catch (error) {
-        console.error(error);
+        console.error('Error al buscar servicios:', error);
       }
     };
-    
-    const fechaInicio = reactive({});  // Mantener la fecha de inicio de cada servicio
-      const currentDate = () => {
-        const today = new Date();
-        return today.toISOString().split('T')[0];  // Formato YYYY-MM-DD
-      };
 
-      const selectServicio = (servicio) => {
-  // Verificar si el servicio ya está seleccionado
-  const servicioExistente = serviciosSeleccionados.value.find(s => s.codServicio === servicio.codServicio);
-
-  if (servicioExistente) {
-    // Ya está seleccionado, no hacer nada
-    return;
-  }
-
-  // Utilizamos la fecha de inicio seleccionada o la actual
-  const fechaInicioSeleccionada = fechaInicio[servicio.codServicio] || currentDate();
-
-  // Obtenemos el tipo de servicio seleccionado
-  const tipoSeleccionado = selectedTipo[servicio.codServicio];
-  const precioSeleccionado = servicio.precios.find(precio => precio.codPrecioServicio === tipoSeleccionado);
-  const cantidadSeleccionada = cantidad[servicio.codServicio] || 1;
-  
-  // Calcular la fecha de fin
-  const fechaFinCalculada = calcularFechaFin(fechaInicioSeleccionada, precioSeleccionado.tipo, cantidadSeleccionada);
-
-  // Asignamos las fechas al formulario, pero asegurándonos de que son individuales por servicio
-  form.fechaInicio = fechaInicioSeleccionada;
-  form.fechaFin = fechaFinCalculada;
-  form.codServiciosF = servicio.codServicio;
-  form.tipoServicioF = precioSeleccionado ? precioSeleccionado.tipo : 'Desconocido';
-
-  const subTotal = precioSeleccionado.precio * cantidadSeleccionada;
-
-  if (isNaN(subTotal) || subTotal <= 0) {
-    console.error('El subTotal no es válido:', subTotal);
-    return;
-  }
-
-  form.subTotal = subTotal;
-
-  // Asegurarnos de que la fecha de inicio y la fecha de fin son únicas por servicio
-  const servicioConFecha = {
-    ...servicio,
-    tipo: precioSeleccionado ? precioSeleccionado.tipo : 'Desconocido',
-    precio: precioSeleccionado ? precioSeleccionado.precio : 0,
-    cantidad: cantidadSeleccionada,
-    fechaFin: fechaFinCalculada,
-    fechaInicio: fechaInicioSeleccionada, // Asegurarnos de que cada servicio tenga su propia fecha de inicio
-    subTotal: subTotal,
-  };
-
-  serviciosSeleccionados.value.push(servicioConFecha);
-
-  form.precioTotal = precioTotal.value;
-  form.montoTotal = serviciosSeleccionados.value.reduce((total, servicio) => total + servicio.subTotal, 0);
-
-  showModal.value = false;
-  verificarEstadoBoton();
-};
-
-const isTipoSeleccionado = (servicio) => {
-  return serviciosSeleccionados.value.some((s) => s.codServicio === servicio.codServicio);
-};
-    const removeServicio = (index) => {
-      serviciosSeleccionados.value.splice(index, 1);
+    const showServicesModal = () => {
+      showModal.value = true;
+      loadAllServices();
     };
-
-    const handleSubmit = () => {
-  // Preparar los datos de los servicios seleccionados para enviarlos
-  const serviciosData = serviciosSeleccionados.value.map(servicio => ({
-    codServicio: servicio.codServicio,
-    tipoServicioF: servicio.tipo,
-    fechaInicio: servicio.fechaInicio, 
-    fechaFin: servicio.fechaFin,
-    subTotal: servicio.subTotal
-  }));
-
-  // Añadir los servicios al formulario
-  form.servicios = serviciosData;
-
-  // Enviar el formulario con los datos estructurados
-  form.post(route('membresia.store'))
-    .then(() => {
-      router.get(route('membresia.index'));
-    })
-    .catch((error) => {
-      // Depurar el objeto de error
-      console.error("Error completo:", error);
-      if (error.response) {
-        console.error("Errores en la respuesta:", error.response.data.errors);
-      } else if (error.request) {
-        console.error("No se recibió respuesta:", error.request);
-      } else {
-        console.error("Error desconocido:", error.message);
-      }
-    });
-};
-
 
     const loadAllServices = async () => {
       try {
@@ -434,9 +340,60 @@ const isTipoSeleccionado = (servicio) => {
         console.error("Error al cargar los servicios:", error);
       }
     };
-    const showServicesModal = () => {
-      showModal.value = true;
-      loadAllServices(); 
+
+    const selectServicio = (servicio) => {
+      // Verificar si el servicio ya está seleccionado
+      const servicioExistente = serviciosSeleccionados.value.find(s => s.codServicio === servicio.codServicio);
+
+      if (servicioExistente) {
+        // Ya está seleccionado, no hacer nada
+        return;
+      }
+
+      // Utilizamos la fecha de inicio seleccionada o la actual
+      const fechaInicioSeleccionada = fechaInicio[servicio.codServicio] || currentDate();
+
+      // Obtenemos el tipo de servicio seleccionado
+      const tipoSeleccionado = selectedTipo[servicio.codServicio];
+      const precioSeleccionado = servicio.precios.find(precio => precio.codPrecioServicio === tipoSeleccionado);
+      const cantidadSeleccionada = cantidad[servicio.codServicio] || 1;
+      
+      // Calcular la fecha de fin
+      const fechaFinCalculada = calcularFechaFin(fechaInicioSeleccionada, precioSeleccionado.tipo, cantidadSeleccionada);
+
+      // Asignamos las fechas al formulario, pero asegurándonos de que son individuales por servicio
+      form.fechaInicio = fechaInicioSeleccionada;
+      form.fechaFin = fechaFinCalculada;
+      form.codServiciosF = servicio.codServicio;
+      form.tipoServicioF = precioSeleccionado ? precioSeleccionado.tipo : 'Desconocido';
+
+      const subTotal = precioSeleccionado.precio * cantidadSeleccionada;
+
+      if (isNaN(subTotal) || subTotal <= 0) {
+        console.error('El subTotal no es válido:', subTotal);
+        return;
+      }
+
+      form.subTotal = subTotal;
+
+      // Asegurarnos de que la fecha de inicio y la fecha de fin son únicas por servicio
+      const servicioConFecha = {
+        ...servicio,
+        tipo: precioSeleccionado ? precioSeleccionado.tipo : 'Desconocido',
+        precio: precioSeleccionado ? precioSeleccionado.precio : 0,
+        cantidad: cantidadSeleccionada,
+        fechaFin: fechaFinCalculada,
+        fechaInicio: fechaInicioSeleccionada,
+        subTotal: subTotal,
+      };
+
+      serviciosSeleccionados.value.push(servicioConFecha);
+
+      form.precioTotal = precioTotal.value;
+      form.montoTotal = serviciosSeleccionados.value.reduce((total, servicio) => total + servicio.subTotal, 0);
+
+      showModal.value = false;
+      verificarEstadoBoton();
     };
 
     const calcularFechaFin = (fechaInicio, tipo, cantidad) => {
@@ -448,23 +405,48 @@ const isTipoSeleccionado = (servicio) => {
       } else if (tipo === "Anual") {
         fecha.setFullYear(fecha.getFullYear() + cantidad);  // Suma años
       }
-      // Retorna la fecha en formato YYYY-MM-DD
       return fecha.toISOString().split("T")[0]; 
     };
 
-    const updateFechaFin = (servicio) => {
-  const tipoSeleccionado = selectedTipo[servicio.codServicio];
-  const precioSeleccionado = servicio.precios.find(precio => precio.codPrecioServicio === tipoSeleccionado);
-  const cantidadSeleccionada = cantidad[servicio.codServicio] || 1;
-  const fechaSeleccionada = fechaInicio[servicio.codServicio] || currentDate();
-  const fechaFinCalculada = calcularFechaFin(fechaSeleccionada, precioSeleccionado.tipo, cantidadSeleccionada);
+    const currentDate = () => {
+      const today = new Date();
+      return today.toISOString().split('T')[0];  // Formato YYYY-MM-DD
+    };
 
-  // Actualiza la fecha de fin del servicio en el array de serviciosSeleccionados
-  const servicioIndex = serviciosSeleccionados.value.findIndex(s => s.codServicio === servicio.codServicio);
-  if (servicioIndex !== -1) {
-    serviciosSeleccionados.value[servicioIndex].fechaFin = fechaFinCalculada;
-  }
-};
+    const isTipoSeleccionado = (servicio) => {
+      return serviciosSeleccionados.value.some((s) => s.codServicio === servicio.codServicio);
+    };
+
+    const removeServicio = (index) => {
+      serviciosSeleccionados.value.splice(index, 1);
+    };
+
+    const handleSubmit = () => {
+      const serviciosData = serviciosSeleccionados.value.map(servicio => ({
+        codServicio: servicio.codServicio,
+        tipoServicioF: servicio.tipo,
+        fechaInicio: servicio.fechaInicio, 
+        fechaFin: servicio.fechaFin,
+        subTotal: servicio.subTotal
+      }));
+
+      form.servicios = serviciosData;
+
+      form.post(route('membresia.store'))
+        .then(() => {
+          router.get(route('membresia.index'));
+        })
+        .catch((error) => {
+          console.error("Error completo:", error);
+          if (error.response) {
+            console.error("Errores en la respuesta:", error.response.data.errors);
+          } else if (error.request) {
+            console.error("No se recibió respuesta:", error.request);
+          } else {
+            console.error("Error desconocido:", error.message);
+          }
+        });
+    };
 
     const verificarEstadoBoton = () => {
       const hayServiciosSeleccionados = serviciosSeleccionados.value.length > 0;
@@ -491,21 +473,20 @@ const isTipoSeleccionado = (servicio) => {
       isSubmitDisabled,
       precioTotal,
       errors,
-      handleSubmit,
-      removeServicio,
-      selectClient,
+      submit,
       searchClient,
+      selectClient,
       searchServices,
-      selectServicio,
       showServicesModal,
-      updateFechaFin,
-      fechaInicio,
-      isTipoSeleccionado,
-      currentDate,
+      selectServicio,
+      removeServicio,
+      handleSubmit,
+      verificarEstadoBoton,
     };
   },
 };
 </script>
+
 
 <style scoped>
 .iframe-wrapper {
