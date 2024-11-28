@@ -87,22 +87,22 @@ class CompraController extends Controller
         ]);
     }
     public function show($codCompra)
-{
-    // Obtener la compra con las relaciones
-    $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
-
-    // Obtener el detalle de la compra con productos, convirtiendo 'codProducto' a texto
-    $detalleCompra = DetalleCompra::with('producto')
-        ->whereRaw('CAST("Producto"."codProducto" AS text) = ?', [(string) $codCompra]) // Convertir 'codProducto' a texto y comparar
-        ->get();
-
-    // Retornar la vista con los datos
-    return Inertia::render('Compra/Detalle', [
-        'compra' => $compra,
-        'detalleCompra' => $detalleCompra
-    ]);
-}
+    {
+        // Obtener la compra con las relaciones
+        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
     
+        // Obtener el detalle de la compra con productos, usando un JOIN con la tabla Producto
+        $detalleCompra = DetalleCompra::with('producto')
+            ->join('Producto', 'Producto.codProducto', '=', 'DetalleCompra.codProducto')  // Hacemos el JOIN con la tabla Producto
+            ->whereRaw('CAST("Producto"."codProducto" AS text) = ?', [(string) $codCompra])  // Comparar codProducto convertido a texto
+            ->get();
+    
+        // Retornar la vista con los datos
+        return Inertia::render('Compra/Detalle', [
+            'compra' => $compra,
+            'detalleCompra' => $detalleCompra
+        ]);
+    }
     
 
 
