@@ -45,6 +45,8 @@ class DetalleCompra extends Model
 
     public function producto()
     {
-        return $this->belongsTo(Producto::class, 'codProducto', 'codProducto');
+        return $this->belongsTo(Producto::class, 'codProducto', 'codProducto')
+                    ->whereRaw('CAST("codProducto" AS TEXT) = "codProducto"');
     }
+    
 }
