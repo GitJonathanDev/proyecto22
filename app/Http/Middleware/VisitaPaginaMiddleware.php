@@ -10,9 +10,13 @@ class VisitaPaginaMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        // Obtener el usuario autenticado
         $user = $request->user();
-        $paginaNombre = $request->route()->getName();
 
+        // Obtener el nombre de la página desde la ruta
+        // Aquí estamos obteniendo la ruta actual, no su nombre
+        $paginaNombre = $request->route()->getName(); // Corregido: nombre de la ruta
+        
         if ($user && $paginaNombre) {
             DB::transaction(function () use ($user, $paginaNombre, $request) {
                 // Consultar si la página ya existe en la base de datos
@@ -25,6 +29,7 @@ class VisitaPaginaMiddleware
                         'conteoVisitas' => 0,
                     ]);
                 } else {
+                    // Obtener el ID de la página existente
                     $paginaId = $pagina->id;
                 }
 
@@ -65,6 +70,7 @@ class VisitaPaginaMiddleware
             });
         }
 
+        // Continuar con la solicitud
         return $next($request);
     }
 }
