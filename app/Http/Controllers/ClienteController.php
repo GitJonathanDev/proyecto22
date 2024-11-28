@@ -97,22 +97,18 @@ class ClienteController extends Controller
         $cliente->update($request->all());
 
         return redirect()->route('cliente.index')->with('success', 'Cliente actualizado correctamente.');
-    }public function buscar(Request $request)
+    }
+    public function buscar(Request $request)
     {
         $query = $request->input('query');
-
-        // Validación rápida
         if (empty($query) || strlen($query) < 2) {
             return response()->json([]);
         }
-
-        // Buscar clientes por nombre, apellido, teléfono o carnet
         $clientes = Cliente::where('nombre', 'like', "%$query%")
-            ->orWhere('apellidoPaterno', 'like', "%$query%")
-            ->orWhere('telefono', 'like', "%$query%")
-            ->orWhere('carnetIdentidad', 'like', "%$query%")
-            ->get(['carnetIdentidad', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'telefono']);
-
+                   ->orWhere('apellidoPaterno', 'like', "%$query%")
+                   ->orWhere('telefono', 'like', "%$query%")
+                   ->orWhere('carnetIdentidad', 'like', "%$query%") 
+                   ->get(['carnetIdentidad', 'nombre', 'apellidoPaterno', 'apellidoMaterno', 'telefono']);
         return response()->json($clientes);
     }
 
