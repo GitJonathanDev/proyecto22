@@ -297,15 +297,15 @@ export default {
     });
 
     const searchClient = async () => {
-      if (form.clienteSearch.length >= 2) {
-        try {
-          const response = await axios.get(`clientes/buscar?query=${form.clienteSearch}`);
-          clientes.value = response.data;
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
+  if (form.value.clienteSearch.length >= 2) {
+    try {
+      const response = await axios.get(route('clientes.buscar', { query: form.value.clienteSearch }));
+      clientes.value = response.data;
+    } catch (error) {
+      console.error('Error al buscar clientes:', error);
+    }
+  }
+};
 
     const selectClient = (cliente) => {
       if (cliente && cliente.carnetIdentidad) {
