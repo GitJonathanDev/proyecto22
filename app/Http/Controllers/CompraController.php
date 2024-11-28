@@ -27,10 +27,18 @@ class CompraController extends Controller
             'deleteMessage' => session('delete'),
         ]);
     }
-    public function create()
+    public function create(Request $request)
     {
-        // $encargado = auth()->user(); // Suponiendo que el encargado es el usuario autenticado.
-        $encargado = Encargado::where('carnetIdentidad', '12454859')->first();
+        // Obtener el usuario autenticado
+        $user = $request->user();
+    
+        // Obtener el encargado relacionado con el usuario autenticado
+        $encargado = $user->encargado; // Usar la relación definida en el modelo User
+    
+        if (!$encargado) {
+            // Si no existe un encargado relacionado, devolver un error
+            return response()->json(['error' => 'El usuario no tiene un encargado asociado.'], 403);
+        }
         $proveedores = Proveedor::all();
         $productos = Producto::with('categoria')->get();
 
