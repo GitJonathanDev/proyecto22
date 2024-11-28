@@ -88,34 +88,21 @@ class CompraController extends Controller
     }
     public function show($codCompra)
     {
-        // Validar que codCompra sea un entero válido
-        if (!is_numeric($codCompra)) {
-            abort(400, 'El código de compra debe ser un valor numérico.');
-        }
+        // Obtener la compra con las relaciones
+        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
     
-        // Obtener la compra junto con el proveedor y encargado
-        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra); 
-    
-        // Obtener los detalles de la compra
-        // Validar que codProducto sea un string y que se obtengan solo productos válidos para esta compra
+        // Asegúrate de que codProducto es tratado como texto en la consulta
         $detalleCompra = DetalleCompra::with('producto')
-            ->where('codCompra', $codCompra)
-            ->get()
-            ->map(function ($detalle) {
-                // Asegurarse que codProducto sea un string
-                if (!is_string($detalle->producto->codProducto)) {
-                    abort(400, 'El código de producto debe ser una cadena de texto.');
-                }
-                return $detalle;
-            });
+            ->join('Producto', 'Producto.codProducto', '=', 'DetalleCompra.codProducto')  // Hacemos el JOIN con la tabla Producto
+            ->where('Producto.codProducto', '=', (string) $codCompra)  // Convertir codCompra a texto explícitamente si es necesario
+            ->get();
     
-        // Devolver la vista con los datos
+        // Retornar la vista con los datos
         return Inertia::render('Compra/Detalle', [
             'compra' => $compra,
             'detalleCompra' => $detalleCompra
         ]);
     }
-    
 
 
     public function buscarProductos(Request $request)
