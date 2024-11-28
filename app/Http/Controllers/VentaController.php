@@ -108,18 +108,38 @@ class VentaController extends Controller
     return Inertia::location(route('venta.show', $venta->codVenta));
 }
 
-    // Mostrar detalles de una venta
-    public function show($codVenta)
-    {
-        $venta = Venta::with(['cliente', 'encargado'])->findOrFail($codVenta);
-        $detalleVenta = DetalleVenta::with('producto')->where('codVenta', $codVenta)->get();
-        $pago = Pago::where('codPago', $venta->codPagoF)->first();
-        return Inertia::render('Venta/Detalle', [
-            'venta' => $venta,
-            'detalleVenta' => $detalleVenta,
-            'pago' => $pago
-        ]);
-    }
+public function show($codVenta)
+{
+    // Asegurarse de que el valor de $codVenta sea un string
+    $codVenta = (string) $codVenta;
+
+    // Buscar la venta con sus relaciones
+    $venta = Venta::with(['cliente', 'encargado'])->findOrFail($codVenta);
+
+    // Obtener los detalles de la venta y cargar la relación con el producto
+    $detalleVenta = DetalleVenta::where('codVenta', $codVenta)
+        ->get()
+        ->map(function ($detalle) {
+            // Asegurarse de que el codProducto sea tratado como un string
+            $detalle->codProducto = (string) $detalle->codProducto;
+
+            // Cargar la relación con Producto y aplicar CAST a codProducto
+            $detalle->producto = Producto::whereRaw('CAST("codProducto" AS VARCHAR) = ?', [$detalle->codProducto])
+                ->first();
+
+            return $detalle;
+        });
+
+    // Obtener el pago asociado a la venta
+    $pago = Pago::where('codPago', $venta->codPagoF)->first();
+
+    // Renderizar la vista con Inertia
+    return Inertia::render('Venta/Detalle', [
+        'venta' => $venta,
+        'detalleVenta' => $detalleVenta,
+        'pago' => $pago
+    ]);
+}
 
     public function update(Request $request, $codVenta)
     {
