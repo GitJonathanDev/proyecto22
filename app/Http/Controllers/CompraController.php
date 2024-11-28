@@ -94,10 +94,10 @@ class CompraController extends Controller
         // Obtener los detalles de la compra con los productos
         $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra)->get();
     
-        // Extraer los códigos de los productos comprados
-        $codProductos = $detalleCompra->pluck('producto.codProducto'); 
+        // Extraer los códigos de los productos comprados como cadenas
+        $codProductos = $detalleCompra->pluck('producto.codProducto')->map(fn($cod) => (string) $cod);
     
-        // Usar dd() para mostrar los códigos de los productos comprados
+        // Mostrar los códigos de productos con dd()
         dd($codProductos);
     
         // Renderizar la vista si no se detiene la ejecución
