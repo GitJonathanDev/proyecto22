@@ -88,19 +88,27 @@ class CompraController extends Controller
     }
     public function show($codCompra)
     {
-        // Convertir $codCompra a texto para que coincida con el tipo character varying
-        $codCompra = (string) $codCompra;
+        // Imprime lo que está recibiendo como parámetro
+        dd('Recibiendo codCompra:', $codCompra);
     
-        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra); 
-        $detalleCompra = DetalleCompra::with('producto')
-            ->where('codCompra', $codCompra) // Asegúrate de que este valor es un string
-            ->get();
+        // Consulta de la compra con las relaciones de proveedor y encargado
+        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
     
+        // Imprime lo que está recibiendo de la base de datos
+        dd('Compra recibida:', $compra);
+    
+        // Consulta de los detalles de la compra
+        $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra)->get();
+    
+        // Imprime los detalles de la compra antes de enviarlos
+        dd('Detalle de compra enviado:', $detalleCompra);
+        
         return Inertia::render('Compra/Detalle', [
             'compra' => $compra,
             'detalleCompra' => $detalleCompra
         ]);
     }
+    
     
     
 
