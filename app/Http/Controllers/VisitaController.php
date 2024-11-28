@@ -16,7 +16,6 @@ class VisitaController extends Controller
         // Obtener el nombre de la ruta usando la acción de la ruta
         $nombrePagina = $this->obtenerNombreRuta($ruta);
 
-        // Si no se encuentra el nombre de la ruta, devolver 0 visitas
         if (!$nombrePagina) {
             return response()->json(['visitas' => 0]);
         }
@@ -33,11 +32,8 @@ class VisitaController extends Controller
     // Función para obtener el nombre de la ruta
     private function obtenerNombreRuta($ruta)
     {
-        // Intentar obtener la ruta registrada por su URL
-        $request = Request::create($ruta);
-        $route = Route::getRoutes()->match($request);
-        
-        // Retornar el nombre de la ruta o null si no se encuentra
+        // Obtener la ruta registrada por su nombre
+        $route = Route::getRoutes()->match(Request::create($ruta));
         return $route ? $route->getName() : null;
     }
 }
