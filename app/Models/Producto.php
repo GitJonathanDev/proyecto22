@@ -38,7 +38,7 @@ class Producto extends Model
 
     public function categoria()
     {
-        return $this->belongsTo(Categoria::class, 'codCategoriaF', 'codCategoria'); // Confirma los nombres de las claves
+        return $this->belongsTo(Categoria::class, 'codCategoriaF', 'codCategoria'); 
     }
     public function detalles()
     {
