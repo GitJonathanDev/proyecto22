@@ -30,7 +30,7 @@ class Producto extends Model
 
 
     protected $casts = [
-        'codProducto'=>'String',
+        'codProducto'=>'string',
         'precio' => 'float',
         'stock' => 'integer',
         'codCategoriaF' => 'integer', 
