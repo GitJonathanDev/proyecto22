@@ -6,7 +6,6 @@ use App\Models\Compra;
 use App\Models\DetalleCompra;
 use App\Models\Proveedor;
 use App\Models\Producto;
-use Illuminate\Support\Facades\DB;
 use App\Models\Encargado;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -87,61 +86,36 @@ class CompraController extends Controller
             'detalleCompra' => $compra->detalleCompra, 
         ]);
     }
+    public function show($codCompra)
+    {
+        // Validar que codCompra sea un entero válido
+        if (!is_numeric($codCompra)) {
+            abort(400, 'El código de compra debe ser un valor numérico.');
+        }
     
-public function show($codCompra)
-{
-    // Obtener la compra con el proveedor y el encargado utilizando joins
-    $compra = DB::table('Compra')
-        ->where('codCompra', $codCompra)
-        ->first(); // Obtener la compra o abortar si no se encuentra
-
-    if (!$compra) {
-        abort(404, 'Compra no encontrada');
-    }
-
-    // Obtener los datos del proveedor y encargado asociados a la compra
-    $proveedor = DB::table('Proveedor')->where('codProveedor', $compra->codProveedor)->first();
-    $encargado = DB::table('Empleado')->where('codEmpleado', $compra->codEmpleado)->first();
-
-    // Asegurarse de que los datos sean accesibles como un objeto
-    $compra = (object) [
-        'codCompra' => $compra->codCompra,
-        'fecha' => $compra->fecha,
-        'codProveedor' => $compra->codProveedor,
-        'codEmpleado' => $compra->codEmpleado,
-        'proveedor' => $proveedor,
-        'encargado' => $encargado,
-    ];
-
-    // Obtener los detalles de la compra y los productos relacionados
-    $detalleCompra = DB::table('DetalleCompra')
-        ->join('Producto', 'DetalleCompra.codProducto', '=', 'Producto.codProducto')
-        ->where('DetalleCompra.codCompra', $codCompra)
-        ->get([
-            'DetalleCompra.*', // Obtener todas las columnas de DetalleCompra
-            'Producto.nombre as producto_nombre', // Obtener el nombre del producto
-            'Producto.descripcion as producto_descripcion', // Obtener la descripción del producto
-            'Producto.precio as producto_precio', // Obtener el precio del producto
+        // Obtener la compra junto con el proveedor y encargado
+        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra); 
+    
+        // Obtener los detalles de la compra
+        // Validar que codProducto sea un string y que se obtengan solo productos válidos para esta compra
+        $detalleCompra = DetalleCompra::with('producto')
+            ->where('codCompra', $codCompra)
+            ->get()
+            ->map(function ($detalle) {
+                // Asegurarse que codProducto sea un string
+                if (!is_string($detalle->producto->codProducto)) {
+                    abort(400, 'El código de producto debe ser una cadena de texto.');
+                }
+                return $detalle;
+            });
+    
+        // Devolver la vista con los datos
+        return Inertia::render('Compra/Detalle', [
+            'compra' => $compra,
+            'detalleCompra' => $detalleCompra
         ]);
-
-    // Devolver la respuesta en el formato esperado por la vista, manteniendo la misma estructura
-    return Inertia::render('Compra/Detalle', [
-        'compra' => $compra, // Ya estamos pasando el objeto convertido correctamente
-        'detalleCompra' => $detalleCompra->map(function ($detalle) {
-            return (object) [
-                'codCompra' => $detalle->codCompra,
-                'codProducto' => $detalle->codProducto,
-                'precioC' => $detalle->precioC,
-                'cantidad' => $detalle->cantidad,
-                'producto' => (object) [
-                    'nombre' => $detalle->producto_nombre,
-                    'descripcion' => $detalle->producto_descripcion,
-                    'precio' => $detalle->producto_precio,
-                ],
-            ];
-        })
-    ]);
-}
+    }
+    
 
 
     public function buscarProductos(Request $request)
