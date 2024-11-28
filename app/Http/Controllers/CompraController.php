@@ -87,58 +87,61 @@ class CompraController extends Controller
             'detalleCompra' => $compra->detalleCompra, 
         ]);
     }
-    public function show($codCompra)
-    {
-        // Obtener la compra con el proveedor y el encargado utilizando joins
-        $compra = DB::table('Compra')
-            ->where('codCompra', $codCompra)
-            ->first(); // Obtener la compra o abortar si no se encuentra
     
-        if (!$compra) {
-            abort(404, 'Compra no encontrada');
-        }
-    
-        // Obtener los datos del proveedor y encargado asociados a la compra
-        $proveedor = DB::table('Proveedor')->where('codProveedor', $compra->codProveedor)->first();
-        $encargado = DB::table('Empleado')->where('codEmpleado', $compra->codEmpleado)->first();
-    
-        // Obtener los detalles de la compra y los productos relacionados
-        $detalleCompra = DB::table('DetalleCompra')
-            ->join('Producto', 'DetalleCompra.codProducto', '=', 'Producto.codProducto')
-            ->where('DetalleCompra.codCompra', $codCompra)
-            ->get([
-                'DetalleCompra.*', // Obtener todas las columnas de DetalleCompra
-                'Producto.nombre as producto_nombre', // Obtener el nombre del producto
-                'Producto.descripcion as producto_descripcion', // Obtener la descripción del producto
-                'Producto.precio as producto_precio', // Obtener el precio del producto
-            ]);
-    
-        // Devolver la respuesta en el formato esperado por la vista, manteniendo la misma estructura
-        return Inertia::render('Compra/Detalle', [
-            'compra' => (object) [
-                'codCompra' => $compra->codCompra,
-                'fecha' => $compra->fecha,
-                'codProveedor' => $compra->codProveedor,
-                'codEmpleado' => $compra->codEmpleado,
-                'proveedor' => $proveedor,
-                'encargado' => $encargado,
-            ],
-            'detalleCompra' => $detalleCompra->map(function ($detalle) {
-                return (object) [
-                    'codCompra' => $detalle->codCompra,
-                    'codProducto' => $detalle->codProducto,
-                    'precioC' => $detalle->precioC,
-                    'cantidad' => $detalle->cantidad,
-                    'producto' => (object) [
-                        'nombre' => $detalle->producto_nombre,
-                        'descripcion' => $detalle->producto_descripcion,
-                        'precio' => $detalle->producto_precio,
-                    ],
-                ];
-            })
-        ]);
+public function show($codCompra)
+{
+    // Obtener la compra con el proveedor y el encargado utilizando joins
+    $compra = DB::table('Compra')
+        ->where('codCompra', $codCompra)
+        ->first(); // Obtener la compra o abortar si no se encuentra
+
+    if (!$compra) {
+        abort(404, 'Compra no encontrada');
     }
-    
+
+    // Obtener los datos del proveedor y encargado asociados a la compra
+    $proveedor = DB::table('Proveedor')->where('codProveedor', $compra->codProveedor)->first();
+    $encargado = DB::table('Empleado')->where('codEmpleado', $compra->codEmpleado)->first();
+
+    // Asegurarse de que los datos sean accesibles como un objeto
+    $compra = (object) [
+        'codCompra' => $compra->codCompra,
+        'fecha' => $compra->fecha,
+        'codProveedor' => $compra->codProveedor,
+        'codEmpleado' => $compra->codEmpleado,
+        'proveedor' => $proveedor,
+        'encargado' => $encargado,
+    ];
+
+    // Obtener los detalles de la compra y los productos relacionados
+    $detalleCompra = DB::table('DetalleCompra')
+        ->join('Producto', 'DetalleCompra.codProducto', '=', 'Producto.codProducto')
+        ->where('DetalleCompra.codCompra', $codCompra)
+        ->get([
+            'DetalleCompra.*', // Obtener todas las columnas de DetalleCompra
+            'Producto.nombre as producto_nombre', // Obtener el nombre del producto
+            'Producto.descripcion as producto_descripcion', // Obtener la descripción del producto
+            'Producto.precio as producto_precio', // Obtener el precio del producto
+        ]);
+
+    // Devolver la respuesta en el formato esperado por la vista, manteniendo la misma estructura
+    return Inertia::render('Compra/Detalle', [
+        'compra' => $compra, // Ya estamos pasando el objeto convertido correctamente
+        'detalleCompra' => $detalleCompra->map(function ($detalle) {
+            return (object) [
+                'codCompra' => $detalle->codCompra,
+                'codProducto' => $detalle->codProducto,
+                'precioC' => $detalle->precioC,
+                'cantidad' => $detalle->cantidad,
+                'producto' => (object) [
+                    'nombre' => $detalle->producto_nombre,
+                    'descripcion' => $detalle->producto_descripcion,
+                    'precio' => $detalle->producto_precio,
+                ],
+            ];
+        })
+    ]);
+}
 
 
     public function buscarProductos(Request $request)
