@@ -17,15 +17,17 @@ export default {
   setup() {
     const visitaCount = ref(0);
 
-    // Función para obtener las visitas desde el backend
+    // Definir la URL completa de la ruta del backend
+    const apiVisitasUrl = '/api/visitas'; // Ruta exacta definida en Laravel
+
     const obtenerVisitas = async () => {
       try {
-        // Se hace una solicitud GET pasando la ruta como parámetro
-        const response = await axios.get('api/visitas', {
-          params: { ruta: window.location.pathname }, // Enviar la ruta actual
+        // Solicitud GET al backend usando la URL de la ruta
+        const response = await axios.get(apiVisitasUrl, {
+          params: { ruta: window.location.pathname }, // Enviar la ruta actual como parámetro
         });
 
-        // Asignar el conteo de visitas al estado reactivo si se recibe una respuesta válida
+        // Asignar el conteo de visitas si la respuesta es válida
         if (response.data && typeof response.data.visitas === 'number') {
           visitaCount.value = response.data.visitas;
         }
@@ -34,7 +36,7 @@ export default {
       }
     };
 
-    // Al montar el componente, obtener las visitas
+    // Llamar al backend al montar el componente
     onMounted(() => {
       obtenerVisitas();
     });
