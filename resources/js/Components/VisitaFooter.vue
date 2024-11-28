@@ -21,8 +21,8 @@ export default {
     const obtenerVisitas = async () => {
       try {
         // Se hace una solicitud GET pasando la ruta como parámetro
-        const response = await axios.get('/api/visitas', {
-          params: { ruta: window.location.pathname }, 
+        const response = await axios.get(route('api.visitas'), {
+          params: { ruta: window.location.pathname },
         });
 
         if (response.data && typeof response.data.visitas === 'number') {
