@@ -87,25 +87,26 @@ class CompraController extends Controller
         ]);
     }
     public function show($codCompra)
-    {
-        // Obtener la compra con sus relaciones de proveedor y encargado
-        $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
-    
-        // Obtener los detalles de la compra con los productos
-        $detalleCompra = DetalleCompra::with('producto')->where('codCompra', $codCompra)->get();
-    
-        // Extraer los códigos de los productos comprados como cadenas
-        $codProductos = $detalleCompra->pluck('producto.codProducto')->map(fn($cod) => (string) $cod);
-    
-        // Mostrar los códigos de productos con dd()
-        dd($codProductos);
-    
-        // Renderizar la vista si no se detiene la ejecución
-        return Inertia::render('Compra/Detalle', [
-            'compra' => $compra,
-            'detalleCompra' => $detalleCompra
-        ]);
-    }
+{
+    // Obtener la compra
+    $compra = Compra::findOrFail($codCompra);
+
+    // Obtener los detalles de la compra
+    $detalleCompra = DetalleCompra::where('codCompra', $codCompra)->get();
+
+    // Cargar relaciones manualmente si son necesarias
+    $compra->load('proveedor', 'encargado');
+    $detalleCompra->each(function ($detalle) {
+        $detalle->load('producto'); // Carga explícita de producto
+    });
+
+    // Enviar los datos a la vista
+    return Inertia::render('Compra/Detalle', [
+        'compra' => $compra,
+        'detalleCompra' => $detalleCompra
+    ]);
+}
+
     
 
 
