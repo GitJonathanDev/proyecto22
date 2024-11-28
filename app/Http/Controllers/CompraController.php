@@ -92,7 +92,7 @@ class CompraController extends Controller
     $compra = Compra::with(['proveedor', 'encargado'])->findOrFail($codCompra);
 
     // Obtener los detalles de la compra y asegurarse de que codProducto sea tratado como string
-    $detalleCompra = DetalleCompra::where('codCompra', $codCompra)
+    $detalleCompra = DetaleCompra::where('codCompra', $codCompra)
         ->get()
         ->each(function ($detalle) {
             $detalle->codProducto = (string) $detalle->codProducto; // Asegurarse del tipo string
