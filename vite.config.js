@@ -11,13 +11,23 @@ export default defineConfig({
         vue({
             template: {
                 transformAssetUrls: {
-                    // Asegurándonos de que los recursos se resuelvan correctamente
-                    base: '/inf513/grupo01cc/proyecto22/public', // La ruta base de tus assets
+                    base: '/inf513/grupo01cc/proyecto22/public/',
                     includeAbsolute: false,
                 },
             },
         }),
     ],
-    // Configuración de la ruta base para todo el proyecto (también es útil para la generación de recursos)
-    base: '/inf513/grupo01cc/proyecto22/public/', 
+    base: '/inf513/grupo01cc/proyecto22/public/',
+    server: {
+        proxy: {
+            // Redirige las peticiones a tu servidor si es necesario
+            '/inf513': {
+                target: 'http://mail.tecnoweb.org.bo',
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/inf513/, ''),
+            },
+        },
+        cors: true, // Habilita CORS
+    },
 });
