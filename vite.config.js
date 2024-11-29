@@ -11,10 +11,13 @@ export default defineConfig({
         vue({
             template: {
                 transformAssetUrls: {
-                   base: '/inf513/grupo01cc/proyecto22/public/',
+                    // Asegurándonos de que los recursos se resuelvan correctamente
+                    base: '/inf513/grupo01cc/proyecto22/public', // La ruta base de tus assets
                     includeAbsolute: false,
                 },
             },
         }),
     ],
+    // Configuración de la ruta base para todo el proyecto (también es útil para la generación de recursos)
+    base: '/inf513/grupo01cc/proyecto22/public/', 
 });
