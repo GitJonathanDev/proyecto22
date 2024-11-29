@@ -1,15 +1,13 @@
 <template>
-  <plantillanav :userName="$page.props.auth.user.name" />
+  <plantillanav />
   <AppLayout title="Realizar Venta">
     <template #header>
       <h2 class="font-semibold text-2xl text-gray-800 leading-tight">Realizar Venta</h2>
     </template>
-
+    <div class="divgrande rounded-2xl mb-12" >
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <!-- Formulario de venta -->
         <form @submit.prevent="submitVenta" class="space-y-6">
-          <!-- Errores -->
           <div v-if="errors.length" class="alert alert-danger bg-red-100 text-red-800 p-4 rounded-md">
             <ul>
               <li v-for="error in errors" :key="error">{{ error }}</li>
@@ -21,25 +19,25 @@
 
           <!-- Encargado -->
           <div class="form-group">
-            <label for="encargado" class="block text-sm font-medium text-gray-700">Encargado:</label>
+            <label for="encargado" class="block text-sm font-medium text-gray-700 bb">Encargado:</label>
             <input type="hidden" v-model="codEncargadoF" />
             <p class="text-lg font-semibold">{{ encargado.nombre }} {{ encargado.apellidoPaterno }} {{ encargado.apellidoMaterno }}</p>
           </div>
 
         <div class="form-group">
-          <label for="buscarCliente" class="block text-sm font-medium text-gray-700">Buscar Cliente:</label>
+          <label for="buscarCliente" class="block text-sm font-medium text-gray-700 bb">Buscar Cliente:</label>
           <input
             type="text"
-            class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 cc"
             v-model="clienteSearch"
             @input="searchClient"
             placeholder="Buscar cliente..."
           />
-          <ul v-if="filteredClientes.length" class="mt-2 max-h-40 overflow-y-auto border border-gray-300 rounded-lg shadow-lg">
+          <ul v-if="filteredClientes.length" class="mt-2 max-h-40 overflow-y-auto border border-gray-300 rounded-lg shadow-lg bb">
             <li
               v-for="cliente in filteredClientes"
               :key="cliente.carnetIdentidad"
-              class="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+              class="px-4 py-2 cursor-pointer"
               @click="seleccionarCliente(cliente)"
             >
               {{ cliente.nombre }} {{ cliente.apellidoPaterno }}
@@ -47,8 +45,8 @@
           </ul>
         </div>
           <div class="form-group">
-            <label for="fechaventa" class="block text-sm font-medium text-gray-700">Fecha:</label>
-            <input type="date" v-model="fechaVenta" class="form-input w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required />
+            <label for="fechaventa" class="block text-sm font-medium text-gray-700 bb">Fecha:</label>
+            <input type="date" v-model="fechaVenta" class="form-input w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 cc" required />
           </div>
           <div class="flex space-x-4">
             <button type="button" class="btn btn-primary mb-3 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600" @click="openBuscarProductoModal">
@@ -70,11 +68,11 @@
         </form>
         <DialogModal :show="showBuscarProductoModal">
           <template #title>
-            <h5 class="modal-title text-xl font-semibold text-gray-800">Buscar Producto</h5>
+            <h5 class="modal-title cc text-xl font-semibold text-gray-800 bb">Buscar Producto</h5>
           </template>
           <template #content>
             <div class="form-group mb-4">
-              <label for="nombreProducto" class="block text-sm font-medium text-gray-700">Buscar por Nombre:</label>
+              <label for="nombreProducto" class="block cc text-sm font-medium text-gray-700 bb">Buscar por Nombre:</label>
               <input
                 type="text"
                 v-model="nombreProducto"
@@ -83,16 +81,16 @@
               />
             </div>
 
-            <div class="table-responsive overflow-x-auto">
-              <table class="table table-striped w-full text-sm">
+            <div class="overflow-x-auto mt-4">
+              <table class="table-auto w-full text-sm">
                 <thead class="bg-gray-100">
                   <tr>
-                    <th class="py-2 px-4 text-left">Nombre</th>
-                    <th class="py-2 px-4 text-left">Precio</th>
-                    <th class="py-2 px-4 text-left">Stock</th>
-                    <th class="py-2 px-4 text-left">Categoría</th>
-                    <th class="py-2 px-4 text-left">Imagen</th>
-                    <th class="py-2 px-4 text-left">Opción</th>
+                    <th class="p-3 text-left">Nombre</th>
+                    <th class="p-3 text-left">Precio</th>
+                    <th class="p-3 text-left">Stock</th>
+                    <th class="p-3 text-left">Categoría</th>
+                    <th class="p-3 text-left">Imagen</th>
+                    <th class="p-3 text-left">Opción</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -110,10 +108,10 @@
                       />
                       <span v-else>No tiene imagen</span>
                     </td>
-                    <td class="py-2 px-4">
+                    <td class="p-3 text-center">
                       <button
                         type="button"
-                        class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                        class="btn-primary text-white p-2 rounded-md "
                         @click="seleccionarProducto(producto)"
                       >
                         Seleccionar
@@ -131,35 +129,36 @@
           </template>
         </DialogModal>
         <div class="mt-6">
-          <h3 class="text-lg font-semibold text-gray-800">Productos Seleccionados</h3>
-          <table class="table table-striped w-full text-sm mt-4">
+          <h3 class="text-lg font-semibold text-gray-800 bb">Productos Seleccionados</h3>
+          <div class="overflow-x-auto mt-4">
+          <table class="table-auto w-full text-sm">
             <thead class="bg-gray-100">
               <tr>
-                <th class="py-2 px-4 text-left">Nombre</th>
-                <th class="py-2 px-4 text-left">Cantidad</th>
-                <th class="py-2 px-4 text-left">Precio</th>
-                <th class="py-2 px-4 text-left">Subtotal</th>
-                <th class="py-2 px-4 text-left">Acción</th>
+                <th class="p-3 text-left">Nombre</th>
+                <th class="p-3 text-left">Cantidad</th>
+                <th class="p-3 text-left">Precio</th>
+                <th class="p-3 text-left">Subtotal</th>
+                <th class="p-3 text-left">Acción</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="producto in productosSeleccionados" :key="producto.id">
-                <td class="py-2 px-4">{{ producto.nombre }}</td>
-                <td class="py-2 px-4">
+                <td class="p-3">{{ producto.nombre }}</td>
+                <td class="p-3">
                   <input
                     type="number"
                     v-model="producto.cantidad"
                     min="1"
-                    class="form-input w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    class="form-input w-full cc p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                     @input="calcularTotalVenta"
                   />
                 </td>
-                <td class="py-2 px-4">{{ producto.precio }} Bs.</td>
-                <td class="py-2 px-4">{{ (producto.cantidad * producto.precio).toFixed(2) }} Bs.</td>
-                <td class="py-2 px-4">
+                <td class="p-3">{{ producto.precio }} Bs.</td>
+                <td class="p-3">{{ (producto.cantidad * producto.precio).toFixed(2) }} Bs.</td>
+                <td class="p-3">
                   <button
                     type="button"
-                    class="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                    class="btn-primary text-white p-2 rounded-md"
                     @click="quitarProducto(producto.id)"
                   >
                     <i class="fas fa-times"></i> Quitar
@@ -169,12 +168,14 @@
             </tbody>
           </table>
         </div>
+        </div>
 
-        <div class="mt-6">
-          <h3 class="text-lg font-semibold text-gray-800">Total de la Venta</h3>
-          <p class="text-xl font-bold text-green-600">{{ totalVenta.toFixed(2) }} Bs.</p>
+        <div class="mt-6 border-solid">
+          <h3 class="text-lg font-semibold text-gray-800 bb">Total de la Venta</h3>
+          <p class="text-2xl font-bold bb pp">{{ totalVenta.toFixed(2) }} Bs.</p>
         </div>
       </div>
+    </div>
     </div>
   </AppLayout>
 </template>

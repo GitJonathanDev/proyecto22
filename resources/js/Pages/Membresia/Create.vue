@@ -2,12 +2,11 @@
   <plantillanav/>
   <div class="py-12">
     <div class="max-w-4xl mx-auto">
-      <div class="bg-white shadow-lg rounded-lg border-t-4 border-green-500">
-        <div class="bg-green-600 text-white p-4 rounded-t-lg">
+      <div class="bg-white shadow-lg rounded-lg border-t-4 border-red-500">
+        <div class="bg-red-600 text-white p-4 rounded-t-lg">
           <h5 class="text-lg font-semibold">Realizar Venta de Membresía</h5>
         </div>
         <div class="p-6">
-          <!-- Error handling -->
           <div v-if="errors && errors.length > 0" class="alert alert-danger mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
             <ul>
               <li v-for="error in errors" :key="error">{{ error }}</li>
@@ -29,19 +28,19 @@
 
             <!-- Buscar Cliente -->
             <div class="mb-4">
-              <label for="buscarCliente" class="block text-sm font-medium text-gray-700">Buscar Cliente:</label>
+              <label for="buscarCliente" class="block text-sm font-medium text-gray-700 cc">Buscar Cliente:</label>
               <input
                 type="text"
-                class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 cc"
                 v-model="form.clienteSearch"
                 @input="searchClient"
                 placeholder="Buscar cliente..."
               />
-              <ul v-if="clientes.length" class="mt-2 max-h-40 overflow-y-auto border border-gray-300 rounded-lg shadow-lg">
+              <ul v-if="clientes.length" class="mt-2 max-h-40 overflow-y-auto border border-gray-300 rounded-lg shadow-lg cc">
                 <li
                   v-for="cliente in clientes"
                   :key="cliente.carnetIdentidad"
-                  class="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                  class="px-4 py-2 cursor-pointer"
                   @click="selectClient(cliente)"
                 >
                   {{ cliente.nombre }} {{ cliente.apellidoPaterno }}
@@ -51,18 +50,18 @@
 
             <!-- Descripción -->
             <div class="mb-4">
-              <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción:</label>
+              <label for="descripcion" class="block text-sm font-medium text-gray-700 cc">Descripción:</label>
               <input
                 type="text"
                 id="descripcion"
-                class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 cc"
                 v-model="form.descripcion"
               />
             </div>
 
             <button
               type="button"
-              class="btn btn-success mb-3 bg-green-600 text-white hover:bg-green-700 p-2 rounded-lg"
+              class="btn btn-success mb-3 bg-red-600 text-white hover:bg-red-700 p-2 rounded-lg"
               @click="showServicesModal"
             >
               <i class="fas fa-search mr-2"></i> Buscar Servicio
@@ -71,7 +70,7 @@
             <!-- Botón de envío -->
             <button
               type="submit"
-              class="bg-green-600 text-white hover:bg-green-700 p-2 rounded-lg w-full"
+              class="bg-red-600 text-white hover:bg-red-700 p-2 rounded-lg w-full"
               :disabled="isSubmitDisabled"
             >
               Realizar Venta de Membresía
@@ -94,60 +93,61 @@
 <div v-if="showModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
   <div class="bg-white rounded-lg p-6 max-w-4xl w-full">
     <div class="flex justify-between items-center">
-      <h1 class="text-lg font-semibold">Buscar Servicio</h1>
+      <h1 class="text-lg font-semibold cc">Buscar Servicio</h1>
       <button @click="showModal = false" class="text-red-600 text-xl">&times;</button>
     </div>
     <form @submit.prevent="searchServices">
       <div class="mb-4">
-        <label for="nombreServicio" class="block text-sm font-medium text-gray-700">Buscar por Nombre:</label>
+        <label for="nombreServicio" class="block text-sm font-medium text-gray-700 cc">Buscar por Nombre:</label>
         <input
           type="text"
-          class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          class="mt-2 p-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 cc"
           v-model="search.nombreServicio"
           placeholder="Ingrese el nombre del servicio"
         />
       </div>
     </form>
-    <div class="table-responsive overflow-x-auto">
-      <table class="table-auto w-full text-sm border-collapse">
-        <thead class="bg-gray-100 text-left">
+    <div class="overflow-x-auto mt-4">
+      <table class="table-auto w-full text-sm">
+        <thead class="bg-gray-100">
           <tr>
-            <th class="px-4 py-2">Nombre</th>
-            <th class="px-4 py-2">Descripción</th>
-            <th class="px-4 py-2">Tipo</th>
-            <th class="px-4 py-2">Horario</th>
-            <th class="px-4 py-2">Cantidad</th>
-            <th class="px-4 py-2">Fecha de Inicio</th> <!-- Nueva columna -->
-            <th class="px-4 py-2">Opción</th>
+            <th class="p-3 text-left">Nombre</th>
+            <th class="p-3 text-left">Descripción</th>
+            <th class="p-3 text-left">Tipo</th>
+            <th class="p-3 text-left">Horario</th>
+            <th class="p-3 text-left">Cantidad</th>
+            <th class="p-3 text-left">Fecha de Inicio</th> <!-- Nueva columna -->
+            <th class="p-3 text-left">Opción</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="servicio in servicios" :key="servicio.codServicio">
-            <td class="px-4 py-2">{{ servicio.nombre }}</td>
-            <td class="px-4 py-2">{{ servicio.descripcion }}</td>
+            <td class="px-4 py-2 cc">{{ servicio.nombre }}</td>
+            <td class="px-4 py-2 cc">{{ servicio.descripcion }}</td>
             <td class="px-4 py-2">
               <select
                 v-model="selectedTipo[servicio.codServicio]"
-                class="w-full p-2 border border-gray-300 rounded-lg"
+                class="w-full p-2 border border-gray-300 rounded-lg cc"
                 :disabled="isTipoSeleccionado(servicio)"
               >
                 <option
                   v-for="precio in servicio.precios"
                   :key="precio.codPrecioServicio"
                   :value="precio.codPrecioServicio"
+                  
                 >
                   {{ precio.tipo }} - {{ precio.precio }} Bs.
                 </option>
               </select>
             </td>
-            <td class="px-4 py-2">{{ servicio.horario ? servicio.horario.horaInicio + ' - ' + servicio.horario.horaFin : 'Sin horario' }}</td>
+            <td class="px-4 py-2 cc">{{ servicio.horario ? servicio.horario.horaInicio + ' - ' + servicio.horario.horaFin : 'Sin horario' }}</td>
             <td class="px-4 py-2">
               <input
                 type="number"
                 v-model="cantidad[servicio.codServicio]"
                 min="1"
                 value="1"
-                class="p-1 w-16 border border-gray-300 rounded-lg"
+                class="p-1 w-16 border border-gray-300 rounded-lg cc"
                 @input="updateFechaFin(servicio)"
                 :disabled="isTipoSeleccionado(servicio)" 
               />
@@ -156,7 +156,7 @@
               <input
                 type="date"
                 v-model="fechaInicio[servicio.codServicio]"
-                class="p-2 border border-gray-300 rounded-lg"
+                class="p-2 border border-gray-300 rounded-lg cc"
                 @change="updateFechaFin(servicio)" 
                 :disabled="isTipoSeleccionado(servicio)"
                 :value="fechaInicio[servicio.codServicio] || currentDate()"
@@ -165,7 +165,7 @@
             <td class="px-4 py-2">
               <button
                 type="button"
-                class="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700"
+                class="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700"
                 @click="selectServicio(servicio)"
                 :disabled="isTipoSeleccionado(servicio)"
               >
@@ -177,40 +177,37 @@
       </table>
     </div>
     <div class="flex justify-between mt-4">
-      <button @click="showModal = false" class="bg-gray-300 text-gray-700 p-2 rounded-lg">Cerrar</button>
-      <button @click="confirmSelection" class="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700">Confirmar Selección</button>
+      <button @click="showModal = false" class="bg-red-300 text-red-700 p-2 rounded-lg">Cerrar</button>
+      <button @click="confirmSelection" class="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700">Confirmar Selección</button>
     </div>
   </div>
 </div>
 
 <div class="mt-8 max-w-4xl mx-auto">
-        <div class="bg-white shadow-lg rounded-lg border-t-4 border-green-500">
-          <div class="bg-green-600 text-white p-4 rounded-t-lg">
-            <h5 class="text-lg font-semibold">Servicios Seleccionados</h5>
-          </div>
-          <div class="p-6">
-            <table class="table-auto w-full text-sm border-collapse">
-              <thead class="bg-gray-100 text-left">
+            <h5 class="text-lg font-semibold bb">Servicios Seleccionados</h5>
+          <div class="overflow-x-auto mt-4">
+            <table class="table-auto w-full text-sm">
+              <thead class="bg-gray-100">
                 <tr>
-                  <th class="px-4 py-2">Nombre</th>
-                  <th class="px-4 py-2">Descripción</th>
-                  <th class="px-4 py-2">Tipo</th>
-                  <th class="px-4 py-2">Precio</th>
-                  <th class="px-4 py-2">Subtotal</th>
-                  <th class="px-4 py-2">Fecha Fin</th>
-                  <th class="px-4 py-2">Opción</th>
+                  <th class="p-3 text-left">Nombre</th>
+                  <th class="p-3 text-left">Descripción</th>
+                  <th class="p-3 text-left">Tipo</th>
+                  <th class="p-3 text-left">Precio</th>
+                  <th class="p-3 text-left">Subtotal</th>
+                  <th class="p-3 text-left">Fecha Fin</th>
+                  <th class="p-3 text-left">Opción</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(servicio, index) in serviciosSeleccionados" :key="index">
-                  <td class="px-4 py-2">{{ servicio.nombre }}</td>
-                  <td class="px-4 py-2">{{ servicio.descripcion }}</td>
-                  <td class="px-4 py-2">{{ servicio.tipo }}</td>
-                  <td class="px-4 py-2">{{ servicio.precio }} Bs.</td>
-                  <td class="px-4 py-2">{{ (servicio.precio * servicio.cantidad).toFixed(2) }} Bs.</td>
-                  <td class="px-4 py-2">{{ servicio.fechaFin }}</td>
-                  <td class="px-4 py-2">
-                    <button type="button" class="bg-red-600 text-white p-2 rounded-lg hover:bg-red-700" @click="removeServicio(index)">
+                  <td class="p-3">{{ servicio.nombre }}</td>
+                  <td class="p-3">{{ servicio.descripcion }}</td>
+                  <td class="p-3">{{ servicio.tipo }}</td>
+                  <td class="p-3">{{ servicio.precio }} Bs.</td>
+                  <td class="p-3">{{ (servicio.precio * servicio.cantidad).toFixed(2) }} Bs.</td>
+                  <td class="p-3">{{ servicio.fechaFin }}</td>
+                  <td class="p-3">
+                    <button type="button" class="btn-primary text-white p-2 rounded-md" @click="removeServicio(index)">
                       Eliminar
                     </button>
                   </td>
@@ -219,15 +216,15 @@
             </table>
             <p class="mt-4 text-xl font-semibold">Total: Bs. {{ precioTotal.toFixed(2) }}</p>
           </div>
-        </div>
+  
       </div>
     <div class="mt-8 max-w-sm mx-auto">
-      <div class="bg-white shadow-lg rounded-lg border-t-4 border-green-500">
-        <div class="bg-green-600 text-white p-4 rounded-t-lg">
+      <div class="bg-white shadow-lg rounded-lg border-t-4 border-red-500">
+        <div class="bg-red-600 text-white p-4 rounded-t-lg">
           <h5 class="text-lg font-semibold">Total de la Membresía</h5>
         </div>
         <div class="p-6">
-          <p class="text-3xl font-bold text-center">{{ precioTotal.toFixed(2) }} Bs.</p>
+          <p class="text-3xl font-bold text-center cc">{{ precioTotal.toFixed(2) }} Bs.</p>
         </div>
       </div>
     </div>
@@ -270,7 +267,7 @@ export default {
     });
     const qrUrl = ref('');
     const selectedTipo = reactive({});
-    const cantidad = reactive({});  // Mantener la cantidad de cada servicio
+    const cantidad = reactive({}); 
     const errors = ref([]);
 
     const isSubmitDisabled = computed(() => {
@@ -395,18 +392,18 @@ const isTipoSeleccionado = (servicio) => {
     };
 
     const handleSubmit = () => {
-  // Preparar los datos de los servicios seleccionados para enviarlos
+  // Prepara los datos antes de enviarlos
   const serviciosData = serviciosSeleccionados.value.map(servicio => ({
     codServicio: servicio.codServicio,
     tipoServicioF: servicio.tipo,
-    fechaInicio: servicio.fechaInicio, 
+    fechaInicio: servicio.fechaInicio,
     fechaFin: servicio.fechaFin,
     subTotal: servicio.subTotal
   }));
 
   // Añadir los servicios al formulario
   form.servicios = serviciosData;
-
+  console.log(form);
   // Enviar el formulario con los datos estructurados
   form.post(route('membresia.store'))
     .then(() => {
@@ -424,6 +421,7 @@ const isTipoSeleccionado = (servicio) => {
       }
     });
 };
+
 
 
     const loadAllServices = async () => {

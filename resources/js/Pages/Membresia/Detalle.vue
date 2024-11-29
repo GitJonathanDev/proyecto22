@@ -1,38 +1,34 @@
 <template>
-  <div class="container mx-auto p-6">
-    <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">Detalle de la Venta de Membresía</h1>
-
-    <!-- Verifica si los detalles de la membresía están disponibles -->
+  <plantillanav/>
+  <div class="py-12">
+    <h1 class="text-2xl font-bold text-center mb-6 text-3xl">Detalle de la Venta de Membresía</h1>
     <div v-if="detalleMembresia.length > 0">
-      <!-- Total Precio Membresía -->
       <div class="mb-6">
-        <h5 class="text-xl font-semibold text-gray-700">Total Precio Membresía:
-          <span class="text-2xl font-bold text-indigo-600">{{ formatCurrency(detalleMembresia[0].membresia.precioTotal) }} Bs.</span>
+        <h5 class="text-2xl font-bold text-center mb-6 text-3xl">Total Precio Membresía:
+          <span class="text-2xl font-bold text-center mb-6 text-3xl">{{ formatCurrency(detalleMembresia[0].membresia.precioTotal) }} Bs.</span>
         </h5>
       </div>
-
-      <!-- Servicios adquiridos -->
-      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <h3 class="text-2xl font-semibold text-gray-800 p-4 border-b">Servicios Adquiridos</h3>
-        <table class="min-w-full bg-white">
-          <thead class="bg-gray-100 text-gray-600 text-left">
+      <div class="overflow-x-auto">
+        <h3 class="text-2xl font-bold text-center mb-6 text-3xl">Servicios Adquiridos</h3>
+        <table class="table-auto w-full text-sm">
+          <thead>
             <tr>
-              <th class="px-4 py-3">Nombre</th>
-              <th class="px-4 py-3">Descripción</th>
-              <th class="px-4 py-3">Fecha Inicio</th>
-              <th class="px-4 py-3">Fecha Fin</th>
-              <th class="px-4 py-3">Subtotal</th>
-              <th class="px-4 py-3">Horario</th>
+              <th class="p-3 text-left">Nombre</th>
+              <th class="p-3 text-left">Descripción</th>
+              <th class="p-3 text-left">Fecha Inicio</th>
+              <th class="p-3 text-left">Fecha Fin</th>
+              <th class="p-3 text-left">Subtotal</th>
+              <th class="p-3 text-left">Horario</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="detalle in detalleMembresia" :key="detalle.id" class="border-b hover:bg-gray-50">
-              <td class="px-4 py-3 text-gray-700">{{ detalle.servicio.nombre }}</td>
-              <td class="px-4 py-3 text-gray-500">{{ detalle.servicio.descripcion }}</td>
-              <td class="px-4 py-3 text-gray-600">{{ formatoFecha(detalle.fechaInicio) }}</td> <!-- Mostrar Fecha Inicio con formato -->
-              <td class="px-4 py-3 text-gray-600">{{ formatoFecha(detalle.fechaFin) }}</td> <!-- Mostrar Fecha Fin con formato -->
-              <td class="px-4 py-3 text-indigo-600">{{ formatCurrency(detalle.subTotal) }} Bs.</td>
-              <td class="px-4 py-3 text-gray-600">
+              <td class="p-3">{{ detalle.servicio.nombre }}</td>
+              <td class="p-3">{{ detalle.servicio.descripcion }}</td>
+              <td class="p-3">{{ formatoFecha(detalle.fechaInicio) }}</td> <!-- Mostrar Fecha Inicio con formato -->
+              <td class="p-3">{{ formatoFecha(detalle.fechaFin) }}</td> <!-- Mostrar Fecha Fin con formato -->
+              <td class="p-3">{{ formatCurrency(detalle.subTotal) }} Bs.</td>
+              <td class="p-3">
                 <div><strong>Hora Inicio:</strong> {{ detalle.servicio.horario.horaInicio }}</div>
                 <div><strong>Hora Fin:</strong> {{ detalle.servicio.horario.horaFin }}</div>
               </td>
@@ -45,32 +41,28 @@
       <p>No se encontraron detalles de membresía.</p>
     </div>
 
-    <!-- Botones para realizar acciones -->
-    <div class="mt-6 flex justify-between space-x-4">
-      <!-- Botón Realizar Nueva Venta de Membresía -->
-      <Link :href="route('membresia.create')" class="btn btn-primary me-3">
-        <i class="fas fa-plus"></i> Realizar Nueva Venta de Membresía
-      </Link>
-      
-      <!-- Botón Volver -->
-      <Link :href="route('membresia.index')" class="btn btn-secondary me-3">
+    <!-- Agregar margen superior a los botones para evitar superposición con la tabla -->
+    <div class="text-center mt-8">
+      <Link :href="route('membresia.index')" class="btn btn-secondary me-2">
         <i class="fas fa-arrow-left"></i> Atrás
+      </Link>
+      <Link :href="route('membresia.create')" class="mt-4 btn-primary ">
+        <i class="fas fa-plus"></i> Realizar Nueva Venta de Membresía
       </Link>
     </div>
   </div>
 </template>
 
 <script>
-// Asegúrate de importar el componente `Link` de Inertia.js
+import plantillanav from '@/Layouts/plantillanav.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 
 export default {
   components: {
-    // Registra el componente Link
+    plantillanav,
     Link
   },
   props: {
-    // Se reciben los datos desde el controlador de Laravel
     detalleMembresia: Array
   },
   methods: {
@@ -99,37 +91,7 @@ export default {
 </script>
 
 <style scoped>
-/* Estilos adicionales para los botones */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary {
-  background-color: #6366f1;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #4f46e5;
-}
-
-.btn-secondary {
-  background-color: #6b7280;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #4b5563;
-}
-
-.btn i {
-  margin-right: 8px;
+.py-12 {
+  margin-top: calc(10px + 1rem);
 }
 </style>
