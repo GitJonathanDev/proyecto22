@@ -11,7 +11,7 @@ export default defineConfig({
         vue({
             template: {
                 transformAssetUrls: {
-                    base: null,
+                    base: '/build/',
                     includeAbsolute: false,
                 },
             },
